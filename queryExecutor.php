@@ -44,13 +44,45 @@ case "createTable":
       }
     }
     else {
-      echo "Database is not selected..!";
+      echo "Databases not selected..!";
     }
     break;
 
-case "Drop":
-    echo "Drop";
+case "DropTable":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+    {
+      $sql = $query_Stat;
+      if ($conn->query($sql) === TRUE) {
+          echo "Table dropped successfully";
+      } else {
+          echo "Error dropping table: " . $conn->error;
+      }
+    }
+    else {
+      echo "Database is not selected..!";
+    }
     break;
+	
+	
+case "DropDatabase":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+    {
+      $sql = $query_Stat;
+      if ($conn->query($sql) === TRUE) {
+          echo "Database dropped successfully";
+      } else {
+          echo "Error dropping Database: " . $conn->error;
+      }
+    }
+    else {
+      echo "Database does not exist..!";
+    }
+    break;
+
 default:
     echo "Nothing to show";
 }
