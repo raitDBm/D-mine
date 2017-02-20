@@ -82,6 +82,23 @@ case "DropDatabase":
       echo "Database does not exist..!";
     }
     break;
+	
+case "TruncateTable":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+	{
+		if($conn->query($query_Stat)=== TRUE){
+			echo "Table truncated succesfully";
+		}
+		else{
+			echo "error truncating database"; 
+		}
+	}
+	else {
+		echo "Database does not exist";
+	}
+	break;
 default:
     echo "Nothing to show";
 }
