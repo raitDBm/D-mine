@@ -4,8 +4,7 @@
 <title>RAIT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/w3.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+<link rel="stylesheet" href="css/w3-colors-signal.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
@@ -22,104 +21,45 @@
           x.previousElementSibling.className.replace("w3-signal-red", "");
         }
       }
-  //when create button is clicked this logic send data and recieve result from queryExecutor
-      $(document).ready(function(){
-          $("#CRE").click(function(){
-            var alertMsg="";
-            var name = $("#dbnameInput").val();
-            var tago="createDatabase";
-            var dataString = 'tag='+ tago + '&dbName='+ name;
-            if(name=='')
-            {
-                alertMsg="Please Fill All Field";
-                $("#alertBoxMain").show();
-                document.getElementById("alertBox").innerHTML=alertMsg;
-            }
-            else
-            {
-                  $.ajax({
-                  type: "POST",
-                  url: "queryExecutor.php",
-                  data: dataString,
-                  success: function(result){
-                    alertMsg=result;
-                    var cmd = "CREATE DATABASE '"+name+"';";
-                    $("#alertBoxMain").show();
-                    document.getElementById("alertBox").innerHTML=alertMsg;
-                    document.getElementById("cmdWindow").innerHTML=cmd;
-                  }
-                  });
-            }
-        });
-      });
 
-  //when reset button is clicked this logic reset input field and alertmsg
-      $(document).ready(function(){
-          $("#RESET").click(function(){
-              var name = $("#dbnameInput").val();
-              var inputfield= document.getElementById('dbnameInput');
-              inputfield.value= inputfield.defaultValue;
-              var cmd = "CREATE DATABASE ";
-              document.getElementById("alertBox").innerHTML="";
-              $("#alertBoxMain").hide();
-              document.getElementById("cmdWindow").innerHTML=cmd;
-            });
-          });
+      function accordion(id) {
+            var x = document.getElementById(id);
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += " w3-light-grey";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                x.previousElementSibling.className.replace(" w3-light-grey", "");
+            }
+        }
+
   </script>
 
 <!-- side navigation bar start -->
   <nav class="w3-sidenav w3-signal-red" style="width:160px;">
 <br>
     <a href="#"><i class="fa fa-home"></i> HOME</a>
-     <div class="w3-accordion">
+    <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
       <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
       </a>
-	 
       <div id="ddl" class="w3-accordion-content w3-white">
-	     <!--DDL-CREATE-->
-         <div class="w3-accordion">           
-		 
+        <div class="w3-dropdown-click">
           <a onclick="DropdownFunc(dropcreate)" href="#">
             <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
           </a>
-          <div id="dropcreate" class="w3-accordion-content w3-white"   >
+          <div id="dropcreate" class="w3-dropdown-content w3-white ">
             <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
             <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
           </div>
-  
-		</div>
-		<!--DDL-ALTER-->
-		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="#">
-            <i class="fa fa-angle-right"></i> Alter <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dropalter" class="w3-accordion-content w3-white"  >
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
-          </div>
-		</div>
-		<!--DDL-Drop-->
-		<a onclick="DropdownFunc(dropdrop)" href="#">
-			<i class="fa fa-angle-right"></i>Drop<i class="fa fa-caret-down"></i>
-		</a> 
-		<div id="dropdrop" class="w3-accordion-content w3-white"  >
-			<a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
-			<a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-		</div>
-		<!--DDL-Truncate-->
-        <a href="#"><i class="fa fa-angle-right"></i> Truncate</a>
+        </div>
 
-          <a href="alter.html">
-            <i class="fa fa-angle-right"></i> Alter </i>
-          </a>
-
+        <a href="alter.html">
+          <i class="fa fa-angle-right"></i> Alter </i>
+        </a>
 
       </div>
-	  
-
-      
     </div>
     <div class="w3-accordion">
       <a onclick="DropdownFunc(dml)" href="#">
@@ -160,7 +100,7 @@
             <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
 
 
-                  <p><i class="	fa fa-angle-double-right"></i> Create Database</p>
+                  <p><i class="	fa fa-angle-double-right"></i> Alter</p>
                 <!-- Alert Box Section by default its hidden start-->
                 <div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
                   <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
@@ -168,13 +108,27 @@
                 </div>
                 <!-- Alert Box Section by default its hidden end-->
 
-                <div class="w3-container w3-border">
-                  <p><label class="w3-label w3-text-blue">Database Name<span class="w3-text-red">*</span>:</label>
-                  <input id="dbnameInput" class="w3-input w3-border-bottom" type="text"></p>
-                  <p class="w3-right"><button id="CRE" class="w3-btn w3-signal-red w3-round-xlarge">CREATE</button>
-                  <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge">RESET</button></p>
 
-                </div>
+                  <button onclick="accordion('AC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Add a Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <div id="AC" class="w3-hide w3-container ">
+                      <p>Some text..</p>
+                  </div>
+              
+                  <button onclick="accordion('MC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Modify a Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <div id="MC" class="w3-hide w3-container">
+                      <p>Some other text..</p>
+                  </div>
+
+                  <button onclick="accordion('RCT')" class="w3-btn-block w3-border w3-center w3-light-grey w3-left-align">Rename a Table Name and Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <div id="RCT" class="w3-hide w3-container">
+                      <p>Some other text..</p>
+                  </div>
+
+                  <button onclick="accordion('DC')" class="w3-btn-block  w3-border w3-center w3-light-grey w3-left-align">Drop a Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <div id="DC" class="w3-hide w3-container">
+                      <p>Some other text..</p>
+                  </div>
+
             </div>
             <!-- Action section end -->
             <!-- flow Chart section start -->
