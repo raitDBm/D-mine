@@ -23,15 +23,16 @@
         }
       }
 	  
-	  //when drop button is clicked this logic will run
+	  //when truncate button is clicked this logic will run
 		$(document).ready(function(){
-          $("#drop").click(function(){
+          $("#truncate").click(function(){
             var alertMsg="";
             var dbname = $("#dbnameInput").val();
-			var query = "DROP DATABASE "+dbname+";";
-			var tago="DropDatabase";
-            var dataString = 'tag='+ tago + '&Query='+ query+'&dbName='+ dbname;
-            if(dbname=='')
+            var tname = $("#TbnameInput").val();
+			var query = "TRUNCATE TABLE "+tname+";";
+			var tago="TruncateTable";
+            var dataString = 'tag='+ tago + '&Query='+ query+'&dbName='+ dbname + '&tName='+ tname;
+            if(dbname=='' || tname=='')
             {
                 alertMsg="Please Fill All Field";
                 $("#alertBoxMain").show();
@@ -46,7 +47,7 @@
                   cache: false,
                   success: function(result){
                     alertMsg=result;
-                    var cmd = "DROP DATABASE '"+dbname+"';";
+                    var cmd = "TRUNCATE TABLE '"+tname+"';";
                     $("#alertBoxMain").show();
                     document.getElementById("alertBox").innerHTML=alertMsg;
                     document.getElementById("cmdWindow").innerHTML=cmd;
@@ -63,7 +64,10 @@
               var inputfield1 = document.getElementById('dbnameInput');
               inputfield1.value= inputfield1.defaultValue;
 			  
-			  var cmd = "DROP DATABASE ";
+			  var inputfield2 = document.getElementById('TbnameInput');
+              inputfield2.value= inputfield2.defaultValue;             
+			  
+			  var cmd = "TRUNCATE TABLE ";
               document.getElementById("alertBox").innerHTML="";
               $("#alertBoxMain").hide();
               document.getElementById("cmdWindow").innerHTML=cmd;
@@ -150,7 +154,7 @@
         <!-- Query view section start-->
         <div class="w3-layout-container">
             <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey" style="width:100%; height: 50px;">
-              <p id="cmdWindow">DROP DATABASE </p>
+              <p id="cmdWindow">TRUNCATE TABLE </p>
             </div>
         </div>
         <!-- Query view section end-->
@@ -159,7 +163,7 @@
           <!-- Action section start -->
             <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
 
-              <p><i class="	fa fa-angle-double-right"></i> Drop Database</p>
+              <p><i class="	fa fa-angle-double-right"></i> Truncate Table</p>
 
               <!-- Alert Box Section by default its hidden start-->
                 <div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
@@ -170,9 +174,11 @@
 				<div class="w3-container w3-border">
                   <p><label class="w3-label w3-text-blue">Database Name<span class="w3-text-red">*</span>:</label>
                   <input id="dbnameInput" class="w3-input w3-border-bottom" type="text"></p>
+                  <p><label class="w3-label w3-text-blue">Table Name<span class="w3-text-red">*</span>:</label>
+                  <input id="TbnameInput" class="w3-input w3-border-bottom" type="text"></p>
                   
                   
-                  <p class="w3-right"><button id="drop" class="w3-btn w3-signal-red w3-round-xlarge">DROP</button>
+                  <p class="w3-right"><button id="truncate" class="w3-btn w3-signal-red w3-round-xlarge">TRUNCATE</button>
 				  <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge">RESET</button></p>
                 </div>
                 <br>
