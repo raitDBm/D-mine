@@ -8,6 +8,25 @@ $tags=$_POST['tag'];
 //main logic
 switch ($tags)
 {
+case "alterModifyTable":
+	$DB_Name=$_POST['db_Name'];
+    $query_Stat=$_POST['Query'];
+    if($conn->select_db($DB_Name))
+    {
+      $sql = $query_Stat;
+      if ($conn->query($sql) === TRUE) {
+          echo "Table created successfully";
+      } else {
+          echo "Error creating table: " . $conn->error;
+      }
+    }
+    else {
+      echo "Database is not selected..!";
+    }
+    break;
+
+
+
 case "createDatabase":
 
     $DBName=$_POST['dbName'];
@@ -48,39 +67,8 @@ case "createTable":
     }
     break;
 
-case "DropTable":
-	$DB_Name=$_POST['dbName'];
-	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-    {
-      $sql = $query_Stat;
-      if ($conn->query($sql) === TRUE) {
-          echo "Table dropped successfully";
-      } else {
-          echo "Error dropping table: " . $conn->error;
-      }
-    }
-    else {
-      echo "Database is not selected..!";
-    }
-    break;
-	
-	
-case "DropDatabase":
-	$DB_Name=$_POST['dbName'];
-	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-    {
-      $sql = $query_Stat;
-      if ($conn->query($sql) === TRUE) {
-          echo "Database dropped successfully";
-      } else {
-          echo "Error dropping Database: " . $conn->error;
-      }
-    }
-    else {
-      echo "Database does not exist..!";
-    }
+case "Drop":
+    echo "Drop";
     break;
 default:
     echo "Nothing to show";
