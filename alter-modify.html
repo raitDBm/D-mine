@@ -24,14 +24,16 @@
       }
 
 
-            //when create button is clicked this logic send data and recieve result from queryExecutor
-            $("#MOD").click(function(){
+            //when MODIFY button is clicked this logic send data and recieve result from queryExecuter.php
+	  $(document).ready(function(){
+            $("#MOD_A").click(function(){
+				//alert("Button is working");
                   //var values="";
                   var table_name = $("#TbnameInput").val();
                   var clm_name = $("#clmNameInput").val();
                   var clm_type = $("#clmTypeInput").val();
                   var clm_size= $("#clmSizeInput").val();
-                  var query = "ALTER TABLE "+table_name+ "MODIFY COLUMN"+clm_name+" "+clm_type+" "+clm_size; //to be continued
+                  var query = "ALTER TABLE "+table_name+ " MODIFY COLUMN "+clm_name+" "+clm_type+" ("+clm_size+");"; //to be continued
                   var tb_tag = "alterModifyTable";
                   var db_name = $("#dbnameInput").val();
                   var dataValues = 'tag='+ tb_tag + '&Query='+ query + '&db_Name='+ db_name;
@@ -48,8 +50,7 @@
                   });
 
             });
-        }
-
+		});
   </script>
 
 <!-- side navigation bar start -->
@@ -141,7 +142,7 @@
                   <input id="clmTypeInput" class="w3-input w3-border-bottom" type="text"></p>
                   <p><label class="w3-label w3-text-blue">New Size<span class="w3-text-red">*</span>:</label>
                   <input id="clmsizeInput" class="w3-input w3-border-bottom" type="number"></p>
-                  <p class="w3-right"><button id="MOD" class="w3-btn w3-signal-red w3-round-xlarge">MODIFY</button></p>
+                  <p class="w3-right"><button id="MOD_A" class="w3-btn w3-signal-red w3-round-xlarge">MODIFY</button></p>
                 </div>
                 <br>
             </div>
