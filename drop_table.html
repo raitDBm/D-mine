@@ -99,14 +99,9 @@
 		</div>
 		<!--DDL-ALTER-->
 		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="#">
-            <i class="fa fa-angle-right"></i> Alter <i class="fa fa-caret-down"></i>
+          <a onclick="DropdownFunc(dropalter)" href="alter.html">
+            <i class="fa fa-angle-right"></i> Alter 
           </a>
-          <div id="dropalter" class="w3-accordion-content w3-white"  >
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
-          </div>
 		</div>
 		<!--DDL-Drop-->
           <a onclick="DropdownFunc(dropdrop)" href="#">
@@ -187,7 +182,16 @@
 
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-              <p>chart</p>
+              <p><b><u>The SQL DROP TABLE Statement</u></b><br><br>
+              The DROP TABLE statement is used to drop an existing table in a database.<br><br>
+              Syntax:<br>
+              <span class="w3-text-blue"> DROP TABLE </span>table_name;<br>
+              <div class="w3-sand w3-card-2 w3-padding"> Note: Be careful before dropping a table. Deleting a table will result in loss of complete information stored in the table!</div>
+              <br>
+              SQL DROP TABLE Example<br>
+              The following SQL statement drops the existing table "Shippers":<br><br>
+              Example<br>
+              DROP TABLE Shippers;</p>
             </div>
             <!-- flow Chart section end -->
 

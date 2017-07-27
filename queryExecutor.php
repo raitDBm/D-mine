@@ -149,6 +149,61 @@ case "addColumn":
 		echo "Database does not exist";
 	}
 	break;
+
+
+case "modifyColumn":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+    {
+      $sql = $query_Stat;
+      if ($conn->query($sql) === TRUE) {
+          echo "Column(s) modified successfully";
+      } else {
+          echo "Error while modifying column(s) " . $conn->error;
+      }
+    }
+    else {
+      echo "Database is not selected..!";
+    }
+
+    break;
+
+case "renameTable":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+	{
+		if($conn->query($query_Stat)===TRUE){
+			echo "Table renamed successfully";
+		}
+		else{
+			echo "error occured while renaming table. Try again.."; 
+		}
+	}
+	else {
+		echo "Database does not exist";
+	}
+	break;
+
+case "dropColumn":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	if($conn->select_db($DB_Name))
+	{
+		if($conn->query($query_Stat)===TRUE){
+			echo "Column Dropped successfully";
+		}
+		else{
+			echo "Error occured while dropping the column. Try again.."; 
+		}
+	}
+	else {
+		echo "Database does not exist";
+	}
+	break;
+
+
 default:
     echo "Nothing to show";
 }

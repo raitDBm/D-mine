@@ -34,15 +34,6 @@
             }
         }
 		
-	  		
- // Do this on $(document).ready(function() { ... })
- // Change the content temporarily
-
-// Use this command if you want to keep divClone as a copy of "#some_div"
- // Restore element with a copy of divClone
-
-// Any changes to "#some_div" after th //
-	
 	
 	$(document).ready(function(){
 			
@@ -69,9 +60,6 @@
                   success: function(result){
 					$("#tstructure").html(result);
                     $("#altercmds").show();
-                    var cmd = "Now you can alter table '"+tname+"'";
-                    document.getElementById("cmdWindow").innerHTML=cmd;
-					
                   }
                   });
             }
@@ -82,6 +70,7 @@
 		function ColGenerator()
         {
 			var divClone = $("#AC").clone();
+			$("#addtable").hide();
             $("#autoCOL").show();
             var i;
             var rNo = parseInt($("#NoOfColInput").val());
@@ -92,6 +81,7 @@
                    '<td><input id="length' + i + '" type="text" class="input" /></td>' +
                    '</tr>');
             }
+            $("#addcolpara").show();
 
             //when create button is clicked this logic send data and recieve result from queryExecutor
             $("#addColumn").click(function(){
@@ -99,14 +89,15 @@
                   i=0;
                   while (i!=rNo) {
                     if(i==0)
-                      values +=  $('#name' + i).val() + ' ' + $('#type' + i).val() + '(' + $('#length' + i).val() +')';
+                      values +=  $('#name' + i).val() + ' ' + $('#type' + i).val() + '(' + $('#length' + i).val() +')'+' after '+$('#after').val() ;
                     else
-                      values += ', '+ $('#name' + i).val() + ' ' + $('#type' + i).val() + '(' + $('#length' + i).val() +')';
+                      values += ', ADD '+ $('#name' + i).val() + ' ' + $('#type' + i).val() + '(' + $('#length' + i).val() +') after '+$('#name'+(i-1)).val() ;
                     i++;
                   }
                   var query = "ALTER TABLE "+ tname +" ADD " + values + ";";
 				  var tb_tag = "addColumn";
                   var dataValues = 'tag='+ tb_tag + '&Query='+ query + '&dbName='+ dbname;
+                  
                   $.ajax({
                   type: "POST",
                   url: "queryExecutor.php",
@@ -118,11 +109,108 @@
 						
                       document.getElementById("alertBox").innerHTML=alertMsg;
                       document.getElementById("cmdWindow").innerHTML=query;
-                      $("#AC").reset();
+                      $("#SUBMIT").click();
+                      
 					}
                   });
 
             });
+        }
+
+        function modify()
+        {
+        	var oldname = $("#oldname").val();
+        	var newname = $("#newname").val();
+        	var dtype = $("#dtype").val();
+        	var query = "ALTER TABLE "+ tname +" Change " + oldname + "  "+newname+" "+dtype+";";
+        	var tb_tag = "modifyColumn";
+			var dataValues = 'tag='+ tb_tag + '&Query='+ query + '&dbName='+ dbname;
+			if (oldname=="" || newname=="" || dtype=="")
+			{
+                alertMsg="Please Fill All Field";
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+            }
+            else
+            {
+			$.ajax({
+			type: "POST",
+			url: "queryExecutor.php",
+			data: dataValues,
+			success: function(result){
+			    alertMsg=result;
+			    $("#alertBoxMain").show();
+				
+			
+			    document.getElementById("alertBox").innerHTML=alertMsg;
+			    document.getElementById("cmdWindow").innerHTML=query;
+			    $("#SUBMIT").click();
+				}
+			});
+
+			}
+        }
+
+        function RenameTable(){
+        	var newname = $("#ntname").val();
+        	var query ="RENAME TABLE "+tname+" TO "+ newname+";";
+        	var tb_tag="renameTable";
+        	var dataValues = "tag="+tb_tag+"&Query="+query+"&dbName=" + dbname;
+        	if(ntname=="")
+        	{
+        		alertMsg="Please Fill All Field";
+        		$("alertBoxMain").show();
+        		document.getElementById("alertMsg").innerHTML=alertMsg;
+        	}
+        	else
+        	{
+        		$.ajax({
+        			type: "POST",
+        			url: "queryExecutor.php",
+        			data: dataValues,
+        			success: function(result){
+        				alertMsg=result;
+        				$("#alertBoxMain").show();
+
+        				document.getElementById("alertBox").innerHTML=alertMsg;
+
+        				document.getElementById("cmdWindow").innerHTML=query;
+        				document.getElementById("TbnameInput").value=newname;
+        				$("#SUBMIT").click();
+        			}
+        		})
+        	}
+        }
+
+        function dropcolumn(){
+        	var cname = $("#colname").val();
+        	if(cname=="")
+        	{
+        		alertMsg="Please Fill All Fields";
+        		$("alertBoxMain").show();
+        		document.getElementById("alertMsg").innerHTML=alertMsg;
+        	}
+        	else
+        	{
+        		var query= "ALTER TABLE "+tname+" DROP COLUMN "+ cname;
+        		var tb_tag = "dropColumn"
+        		var dataValues = "tag="+tb_tag+"&Query="+query+"&dbName="+dbname;
+        		$.ajax({
+        			type: "POST",
+        			url: "queryExecutor.php",
+        			data: dataValues,
+        			success: function(result){
+        				alertMsg=result;
+        				$("#alertBoxMain").show();
+
+        				document.getElementById("alertBox").innerHTML=alertMsg;
+
+        				document.getElementById("cmdWindow").innerHTML=query;
+
+        				$("#SUBMIT").click();
+        			}
+        		})
+        	}
         }
 
 
@@ -154,14 +242,10 @@
 		</div>
 		<!--DDL-ALTER-->
 		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="#">
-            <i class="fa fa-angle-right"></i> Alter <i class="fa fa-caret-down"></i>
+          <a onclick="DropdownFunc(dropalter)" href="alter.html">
+            <i class="fa fa-angle-right"></i> Alter 
           </a>
-          <div id="dropalter" class="w3-accordion-content w3-white"  >
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
-          </div>
+
 		</div>
 		<!--DDL-Drop-->
           <a onclick="DropdownFunc(dropdrop)" href="#">
@@ -208,7 +292,7 @@
         <!-- Query view section start-->
         <div class="w3-layout-container">
             <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey" style="width:100%; height: 50px;">
-              <p id="cmdWindow">First select the db and table u want to alter </p>
+              <p id="cmdWindow">First select the Database and Table you want to alter and then proceed.. </p>
             </div>
         </div>
         <!-- Query view section end -->
@@ -255,7 +339,7 @@
 				
 				<!-- display table structure start -->
 					<div>
-						<table id="tstructure" class="w3-table">
+						<table id="tstructure" class="w3-table w3-striped w3-bordered">
 						
 						</table>
 					
@@ -265,10 +349,12 @@
                   <button onclick="accordion('AC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Add a Column(s) <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
                   <div id="AC" class="w3-hide w3-container ">
                       <p>
-					  <table>
+					  <table id="addtable">
 							<tr>
 								<td><label class="w3-label w3-text-blue">Number of columns<span class="w3-text-red">*</span>:&nbsp</label></td>
-								<td><input id="NoOfColInput" class="w3-input w3-border" type="text" style="width:90%"></td>
+								<td><input id="NoOfColInput" class="w3-input w3-border" type="text" ></td>&nbsp
+								<td><label class="w3-label w3-text-blue">After<span class="w3-text-red">*</span>:&nbsp</label></td>
+								<td><input id="after" type="text" class="w3-input w3-border"></td>&nbsp
 								<td><button onclick="ColGenerator();">Add</button></td>
 							</tr>
 					  </table>
@@ -284,22 +370,45 @@
 							</thead>
 						</table>
 					</p>
-					  <p class="w3-right"><button id="addColumn" class="w3-btn w3-signal-red w3-round-xlarge">ADD COLUMN(S)</button></p>
+					  <p class="w3-right " id="addcolpara" style="display: none;"><button id="addColumn" class="w3-btn w3-round-xlarge w3-blue-grey w3-right">ADD COLUMN(S)</button></p>
                   </div>
               
-                  <button onclick="accordion('MC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Modify a Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <button onclick="accordion('MC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Modify a column<i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
                   <div id="MC" class="w3-hide w3-container">
-                      <p>Some other text..</p>
+                      <p>
+                      	<table class="w3-table">
+                      		<tr>
+                      			<td><label class="w3-text-blue">Old column name<span class="w3-text-red">*</span>:</label><br>
+                      			<input id="oldname" type="text" class="w3-input w3-border"></td>
+                      			<td><label class="w3-text-blue">New column name<span class="w3-text-red">*</span>:</label><br>
+                      			<input id="newname" type="text" class="w3-input w3-border"></td>
+                      			<td><label class="w3-text-blue">Data Type(length)<span class="w3-text-red">*</span>:</label><br>
+                      			<input type="text" id="dtype" class="w3-input w3-border"></td>
+                      		</tr>
+                      	</table>
+                      </p>
+                      <p><button onclick="modify();" class="w3-btn w3-round-xlarge w3-blue-grey w3-right">Modify</button></p>
+                      <br><br>
                   </div>
 
-                  <button onclick="accordion('RCT')" class="w3-btn-block w3-border w3-center w3-light-grey w3-left-align">Rename a Table Name and Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <button onclick="accordion('RCT')" class="w3-btn-block w3-border w3-center w3-light-grey w3-left-align">Rename the Table<i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
                   <div id="RCT" class="w3-hide w3-container">
-                      <p>Some other text..</p>
+                      <p>
+                      	<label class="w3-text-blue">New Table name:<span class="w3-text-red">*</span></label>
+                      	<input class="w3-input w3-border"type="text" id="ntname">
+                      </p>
+                      <p><button class="w3-btn w3-blue-grey w3-right w3-round-xlarge" id="renametable" onclick="RenameTable();">RENAME TABLE</button></p><br><br>
                   </div>
 
                   <button onclick="accordion('DC')" class="w3-btn-block  w3-border w3-center w3-light-grey w3-left-align">Drop a Column <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
                   <div id="DC" class="w3-hide w3-container">
-                      <p>Some other text..</p>
+                      <p>
+                      	<label class="w3-text-blue">Enter column name:<span class="w3-text-red">*</span> </label><br>
+                      	<input  class="w3-input w3-border" type="text" id="colname" >
+                      </p>
+                      <p>
+                      	<button class="w3-btn w3-round-xlarge w3-blue-grey w3-right" onclick="dropcolumn();">DROP COLUMN</button>
+                      </p><br><br>
                   </div>
 				</div>
 				  <!-- code to alter table end -->
@@ -308,7 +417,14 @@
             <!-- Action section end -->
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-              <p>chart</p>
+            
+              <p ><b> ALTER  TABLE: </b> <br>The ALTER TABLE statement is used to add, delete, or modify columns in an existing table.</p>
+            <ul>
+            <li>  <p><b>ALTER TABLE - ADD Column</b><br>To add a column in a table, use the following syntax:<br><span class="w3-text-blue">ALTER TABLE</span> table_name<br><span class="w3-text-blue">ADD</span> column_name datatype;</p></li>
+            <li><p><b>ALTER TABLE - ALTER/MODIFY COLUMN</b><br><span class="w3-text-blue">ALTER TABLE</span> table_name<br><span class="w3-text-blue">CHANGE</span> old_column_name new_column_name new_datatype;</p></li>
+            <li><p><b>ALTER TABLE - RENAME TABLE</b><br><span class="w3-text-blue">ALTER TABLE</span> old_table_name<span class="w3-text-blue"> TO</span> new_table_name;</p></li>
+            <li><p><b>ALTER TABLE - DROP COLUMN</b><br><span class="w3-text-blue">ALTER TABLE</span> table_name <span class="w3-text-blue">DROP COLUMN</span> column_name;</p></li>
+			      </ul>
             </div>
             <!-- flow Chart section start end -->
         </div>

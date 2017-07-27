@@ -94,14 +94,9 @@
 		</div>
 		<!--DDL-ALTER-->
 		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="#">
-            <i class="fa fa-angle-right"></i> Alter <i class="fa fa-caret-down"></i>
+          <a onclick="DropdownFunc(dropalter)" href="alter.html">
+            <i class="fa fa-angle-right"></i> Alter
           </a>
-          <div id="dropalter" class="w3-accordion-content w3-white"  >
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
-          </div>
 		</div>
 		<!--DDL-Drop-->
 		<a onclick="DropdownFunc(dropdrop)" href="#">
@@ -196,7 +191,18 @@
 
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-              <p>chart</p>
+              <p><u><b>The SQL CREATE TABLE Statement</b><br></u><br>
+              The CREATE TABLE statement is used to create a new table in a database.<br>
+              Syntax:<br>
+              CREATE TABLE table_name (<br>
+              column1 datatype,<br>
+              column2 datatype,<br>
+              column3 datatype,<br>
+              ....<br>
+              );<br>
+              The column parameters specify the names of the columns of the table.<br>
+              <br>
+              The datatype parameter specifies the type of data the column can hold (e.g. varchar, integer, date, etc.).</p>
             </div>
             <!-- flow Chart section end -->
 
