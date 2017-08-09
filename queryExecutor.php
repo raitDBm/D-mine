@@ -343,6 +343,39 @@ case "SelectExecution":
         }
         $conn->close();
         break;
+case "selectall":
+	$DB_Name=$_POST['dbName'];
+	$query_Stat=$_POST['Query'];
+	$tablename=$_POST['tName'];
+	if($conn->select_db($DB_Name))
+	{
+		$result=mysqli_query($conn,$query_Stat);
+		
+		while($data = mysqli_fetch_row($result))
+		{
+			echo "<tr>";
+			for($i=0;$i<count($data);$i++)
+			{
+				echo"<td>$data[$i]<td>";
+			}
+			$count1=count($data);
+			$count1=$count1-1;
+			echo "<td><button id='' class='w3-btn w3-round-xxlarge w3-small w3-blue-grey' onclick=\"update(";
+			for($i=0;$i<count($data);$i++)
+			{
+
+				echo "'".$data[$i]."',";
+				
+			}
+			echo")\">update</button></td>";
+			echo "</tr>";
+		}
+		
+		
+	}
+	else {
+		echo "Database does not exist";
+	}
     default:
         echo "Nothing to show";
 }
