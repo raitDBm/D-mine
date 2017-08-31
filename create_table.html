@@ -3,7 +3,7 @@
 <head>
 <title>RAIT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="css/w3.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -73,16 +73,16 @@
 <!-- side navigation bar start -->
   <nav class="w3-sidenav w3-signal-red" style="width:160px;">
 <br>
-    <a href="#"><i class="fa fa-home"></i> HOME</a>
+    <a href="index.html"><i class="fa fa-home"></i> HOME</a>
     <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
       <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
       </a>
-	 
+
       <div id="ddl" class="w3-accordion-content w3-white">
 	     <!--DDL-CREATE-->
-         <div class="w3-accordion">           
-		 
+         <div class="w3-accordion">
+
           <a onclick="DropdownFunc(dropcreate)" href="#">
             <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
           </a>
@@ -90,40 +90,54 @@
             <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
             <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
           </div>
-  
+
 		</div>
 		<!--DDL-ALTER-->
-		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="#">
-            <i class="fa fa-angle-right"></i> Alter <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dropalter" class="w3-accordion-content w3-white"  >
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
-          </div>
-		</div>
+        <a  href="alter.html">
+          <i class="fa fa-angle-right"></i> Alter
+        </a>
 		<!--DDL-Drop-->
-        <a href="#"><i class="fa fa-angle-right"></i> Drop</a>
+		<a onclick="DropdownFunc(dropdrop)" href="#">
+			<i class="fa fa-angle-right"></i> Drop <i class="fa fa-caret-down"></i>
+		</a>
+		<div id="dropdrop" class="w3-accordion-content w3-white"  >
+			<a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
+			<a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
+		</div>
 		<!--DDL-Truncate-->
-        <a href="#"><i class="fa fa-angle-right"></i> Truncate</a>
+        <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
 
       </div>
-	  
 
-      
+
+
     </div>
     <div class="w3-accordion">
       <a onclick="DropdownFunc(dml)" href="#">
       <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
       </a>
-      <div id="dml" class="w3-accordion-content ">
-        <a href="#"><i class="fa fa-angle-right"></i> Link 1</a>
-        <a href="#"><i class="fa fa-angle-right"></i> Link 2</a>
-        <a href="#"><i class="fa fa-angle-right"></i> Link 3</a>
+      <div id="dml" class="w3-accordion-content w3-white">
+        <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+        <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+        <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+        <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
       </div>
     </div>
-
+    <div class="w3-accordion">
+      <a onclick="DropdownFunc(view)" href="#">
+      <i class="fa fa-plus-square-o"></i> VIEW <i class="fa fa-caret-down"></i>
+      </a>
+      <div id="view" class="w3-accordion-content w3-white ">
+          <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+          <a href="#" onclick="DropdownFunc(alter_view)"><i class="fa fa-angle-right"></i> Alter view <i class="fa fa-caret-down"></i> </a>
+          <div id="alter_view" class="w3-accordion-content w3-white">
+          <a href="Drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+          <a href="Rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
+          </div>
+         
+      </div>
+      
+    </div>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 <!-- side navigation bar end -->
