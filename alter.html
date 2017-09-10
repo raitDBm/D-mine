@@ -48,6 +48,7 @@
     text-decoration: none;
     cursor: pointer;
 }
+
 </style>
 
   <script>
@@ -61,6 +62,16 @@
           x.previousElementSibling.className.replace("w3-signal-red", "");
         }
       }
+
+    function showANDhideBox(x){
+
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+
+    }
 
       function accordion(id) {
             var x = document.getElementById(id);
@@ -122,6 +133,166 @@
                 }
             });
         }
+        function GetColumn()
+        {
+          database_name=$("#dbnameInput").val();
+          table_name=$("#TbnameInput").val();
+          
+          var query = "";
+          var tago = "getColumns";
+          var dataString = 'tag='+ tago +'&dbName='+ database_name + '&Query='+query+ '&tbName='+table_name;
+
+        $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataString,
+          success: function(result){
+              /*var Count_num=Object.keys(result).length;
+              for(var i=0;i<Count_num;i++)
+              {
+                  $('#Table_Columns')
+                  .append(
+                    '<option value="' +result[i]+ '">'+ result[i] + '</option>'
+                    );
+              }*/
+              alertMsg=result;
+              $("#Table_Columns").html(result);
+            }
+        
+        });
+
+        }
+        function Add_Indexes()
+        {
+
+            var tago="alter_index";
+            var database_name=$("#dbnameInput").val();
+            var cons_name=$("#Constraint_name").val();
+            var col_name=$("#Table_Columns").val();
+            var table_name=$("#TbnameInput").val();
+            
+            //alert(table_name);
+            if(cons_name == 'P_K')
+            {
+                var query="ALTER TABLE "+table_name+" ADD PRIMARY KEY ("+col_name+");";
+            }
+            else if(cons_name == 'U_K')
+            {
+                var query="ALTER TABLE "+table_name+" ADD UNIQUE KEY ("+col_name+");";
+            }
+            else
+            {
+                var ref_table_name=$("#ref_TbnameInput").val();
+                var ref_column_name=$("#reference_column_list").val();
+                var query="alter table "+table_name+" add foreign key("+col_name+") references "+ref_table_name+"("+ref_column_name+");";
+            }
+                       
+            var dataString='tag='+tago+'&Query='+query+'&dbName='+database_name;
+            $.ajax({
+              type:"POST",
+              url:"queryExecutor.php",
+              data:dataString,
+              success:function(result){
+                  alertMsg=result;
+                  $("#alertBoxMain").show();
+                  $("#alertBox").html(result);
+                  // document.getElementById("alertBox").innerHTML=alertMsg;
+              }            
+            });
+
+        }
+        function Drop_Indexes()
+        {
+
+            var tago="drop_index";
+            var database_name=$("#dbnameInput").val();
+            var cons_name=$("#Constraint_name").val();
+            var col_name=$("#Table_Columns").val();
+            var table_name=$("#TbnameInput").val();
+            //alert(table_name);
+            if(cons_name == 'P_K')
+            {
+                var query="ALTER TABLE "+table_name+" DROP PRIMARY KEY;";
+            }
+            else if(cons_name == 'U_K')
+            {
+                var query="ALTER TABLE "+table_name+" DROP INDEX "+col_name;
+            }
+            else
+            {
+                var query="dd";
+            }
+            
+            var dataString='tag='+tago+'&Query='+query+'&dbName='+database_name;
+            $.ajax({
+              type:"POST",
+              url:"queryExecutor.php",
+              data:dataString,
+              success:function(result){
+                  alertMsg=result;
+                  $("#alertBoxMain").show();
+                  $("#alertBox").html(result);
+                  // document.getElementById("alertBox").innerHTML=alertMsg;
+              }            
+            });
+
+        }
+        function reference_table()
+        {
+            var tdbName=$("#dbnameInput").val();
+            var selectobject=document.getElementById("ref_TbnameInput");
+            for (var i = selectobject.length - 1; i >= 1; i--){
+                    selectobject.options[i] = null;
+            }
+            var tago="TbDropdownList";
+            var dataString = 'tag='+ tago + '&dbName='+ tdbName;
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                dataType: 'json',
+                data: dataString,
+                success: function(result){
+                    var countItem = Object.keys(result).length;
+
+                    for (var i = 0; i < countItem; i++) {
+                        $('#ref_TbnameInput')
+                            .append(
+
+                                '<option value="' + result[i] + '">' + result[i] + '</option>'
+                            );
+                    }
+                }
+            });
+        }
+        function reference_column()
+        {
+            database_name=$("#dbnameInput").val();
+          table_name=$("#ref_TbnameInput").val();
+          
+          var query = "";
+          var tago = "getColumns";
+          var dataString = 'tag='+ tago +'&dbName='+ database_name + '&Query='+query+ '&tbName='+table_name;
+
+        $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataString,
+          success: function(result){
+              /*var Count_num=Object.keys(result).length;
+              for(var i=0;i<Count_num;i++)
+              {
+                  $('#Table_Columns')
+                  .append(
+                    '<option value="' +result[i]+ '">'+ result[i] + '</option>'
+                    );
+              }*/
+              alertMsg=result;
+              $("#reference_column_list").html(result);
+            }
+        
+        });
+        }
+
 	
 	$(document).ready(function(){
 			
@@ -268,7 +439,7 @@
 						setInterval(function(){ document.getElementById('TbnameInput').value=newname; tname=newname;}, 1000);
 						
         			}
-        		})
+        		});
         	}
         }
 
@@ -293,7 +464,7 @@
 						
         				$("#SUBMIT").click();
         			}
-        		})
+        		});
         	
         }
 		
@@ -339,49 +510,41 @@
                 </a>
 
 		</div>
-		<!--DDL-Drop-->
-          <a onclick="DropdownFunc(dropdrop)" href="#">
-            <i class="fa fa-angle-right"></i> Drop<i class="fa fa-caret-down"></i>
-          </a> 
- 		<div id="dropdrop" class="w3-accordion-content w3-white"  >
-            <a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-          </div>
-		<!--DDL-Truncate-->
-        <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
+          <!--DDL-Drop-->
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop</a>
+          <!--DDL-Truncate-->
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
 
       </div>
-	  
 
-      
-    </div>
-  
-    <div class="w3-accordion">
-      <a onclick="DropdownFunc(dml)" href="#">
-      <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="dml" class="w3-accordion-content w3-white ">
-          <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
-          <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
-          <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
-          <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
-      </div>
-    </div>
-   <div class="w3-accordion">
-      <a onclick="DropdownFunc(view)" href="#">
-      <i class="fa fa-plus-square-o"></i> VIEW <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="view" class="w3-accordion-content w3-white ">
-          <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
-          <a href="#" onclick="DropdownFunc(alter_view)"><i class="fa fa-angle-right"></i> Alter view <i class="fa fa-caret-down"></i> </a>
-          <div id="alter_view" class="w3-accordion-content w3-white">
-          <a href="Drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
-          <a href="Rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
-          </div>
-         
-      </div>
-      
-    </div>
+
+
+     </div>
+
+        <div class="w3-accordion">
+            <a onclick="DropdownFunc(dml)" href="#">
+                <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="dml" class="w3-accordion-content w3-white">
+                <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+                <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+                <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+                <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
+            </div>
+        </div>
+
+        <div class="w3-accordion">
+
+            <a onclick="DropdownFunc(alter_view)" href="#">
+                <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="alter_view" class="w3-accordion-content w3-white"   >
+                <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+                <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+                <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
+            </div>
+
+        </div>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 <!-- side navigation bar end -->
@@ -520,6 +683,22 @@
                       <p><button class="w3-btn w3-blue-grey w3-right w3-round-xlarge" id="renametable" onclick="RenameTable();">RENAME TABLE</button></p>
 
                   </div>
+                  <button onclick="accordion('AIT')" class="w3-btn-block w3-light-grey w3-light-border w3-center">ADD/Drop CONSTRAINTS TO COLUMN<i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
+                  <div id="AIT" class="w3-hide w3-container">
+                  <p>
+                  <table class="w3-table">
+                    <tr class="w3-light-grey"><th>Constraint</th><th>Column name</th></tr>
+                    <tr class="w3-light-grey"><td><select onclick="GetColumn()" id="Constraint_name"><option>Select Contraint</option><option value="P_K">Primary Key</option><option value="U_K">Unique Key</option><option value="F_K">Foreign Key</option></select></td>    
+                    <td><select id="Table_Columns" onclick="reference_table()"><option value=0>Select Columns</option></select></td></tr>
+                    <tr><td></td>
+                    <td id="HideFirst">references table :<select id = "ref_TbnameInput" name="TDD" onclick="reference_column()">
+                                    <option value = 0>Select Table</option>
+                                </select> <select id="reference_column_list"><option value=0>Select column</option></select> </td></tr>
+                  </table>
+                  <button class="w3-right w3-btn w3-round-xlarge w3-blue-grey" id="add_index" onclick="Add_Indexes()">ADD</button>
+                  <button class="w3-right w3-btn w3-round-xlarge w3-blue-grey" id="add_index" onclick="Drop_Indexes()">Drop      </button>
+                   </p> 
+                  </div>
                     <br>
                     <br>
 
@@ -530,7 +709,86 @@
             <!-- Action section end -->
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-            
+
+                <p>
+                    <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
+                <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)">
+                <div class="w3-tag w3-round w3-green w3-border w3-border-white">
+                    Description :
+                </div>
+            </div></p>
+                <p id ="description">The MySQL ALTER TABLE statement is used to add, modify, or drop/delete columns in a table.
+                    The MySQL ALTER TABLE statement is also used to rename a table.</p>
+            </div>
+            </p>
+
+                    <p>
+                        <div class="w3-panel w3-pale-blue w3-border-left w3-border-blue">
+                    <p> <div class="w3-tag w3-round w3-blue" style="padding:3px" onclick="showANDhideBox(syntax)">
+                    <div class="w3-tag w3-round w3-blue w3-border w3-border-white">
+                        Syntax :
+                    </div>
+                </div></p>
+                    <p id="syntax" style="display:none">
+                        <b>Add column in table :</b> <br>
+                        ALTER TABLE table_name
+                        ADD new_column_name column_definition
+                        [ FIRST | AFTER column_name ];
+                        <br><br>
+                        <b>Modify column in table :</b>  <br>
+                        ALTER TABLE table_name
+                        MODIFY column_name column_definition
+                        [ FIRST | AFTER column_name ];
+                        <br><br>
+                        <b>Drop column in table :</b><br>
+                        ALTER TABLE table_name
+                        DROP COLUMN column_name;
+                        <br><br>
+                        <b>Rename column in table :</b><br>
+                        ALTER TABLE table_name
+                        CHANGE COLUMN old_name new_name
+                        column_definition
+                        [ FIRST | AFTER column_name ]
+                        <br><br>
+                        <b>Rename table :</b><br>
+                        ALTER TABLE table_name
+                        RENAME TO new_table_name;
+                       </p>
+                </div>
+                  </p>
+
+                  <p>
+                      <div class="w3-panel w3-pale-red w3-border-left w3-border-red">
+                  <p> <div class="w3-tag w3-round w3-red" style="padding:3px" onclick="showANDhideBox(example)">
+                  <div class="w3-tag w3-round w3-red w3-border w3-border-white">
+                      Example :
+                  </div>
+              </div></p>
+                  <p id="example" style="display:none">
+                      <b>Add column in table :</b> <br>
+                      ALTER TABLE contacts
+                      ADD last_name varchar(40) NOT NULL
+                      AFTER contact_id;
+                      <br><br>
+                      <b>Modify column in table :</b>  <br>
+                      ALTER TABLE contacts
+                      MODIFY last_name varchar(50) NULL;
+                      <br><br>
+                      <b>Drop column in table :</b><br>
+                      ALTER TABLE contacts
+                      DROP COLUMN contact_type;
+                      <br><br>
+                      <b>Rename column in table :</b><br>
+                      ALTER TABLE contacts
+                      CHANGE COLUMN contact_type ctype
+                      varchar(20) NOT NULL;
+                      <br><br>
+                      <b>Rename table :</b><br>
+                      ALTER TABLE contacts
+                      RENAME TO people;
+                  </p>
+              </div>
+                </p>
 
             </div>
             <!-- flow Chart section start end -->
