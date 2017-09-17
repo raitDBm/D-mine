@@ -641,7 +641,81 @@ case "deleteselectall":
             echo "Database does not exist";
         }
         break;
+	case "login":
+	$roll_no=$_POST['roll_no'];
+	$password=$_POST['password'];
+	$con=mysqli_connect("localhost","root","","dmine") or die ('I cannot connect to the database because: ' . mysql_error());
+
+	$query = "select * from students where roll_no='$roll_no'  and password='$password' ";
 	
+	$query_run = mysqli_query($con,$query);
+	$response = array();
+	if($query_run)
+	{
+		if(mysqli_num_rows($query_run)>0)
+		{
+			session_start();
+			$_SESSION['roll_no'] = $roll_no;
+			
+			$response['login_status'] = true;
+
+			echo json_encode($response);
+		}
+		else
+		{
+			$response['login_status'] = false;
+
+			echo json_encode($response);
+		}
+	}
+	
+	break;
+	
+	case "register":
+		$rollno=$_POST['roll_no'];
+		$name=$_POST['name'];
+		$password=$_POST['password'];
+		$cpassword=$_POST['cpassword'];
+		$email=$_POST['email'];
+		$division=$_POST['division'];
+		$batch=$_POST['batch'];
+		$year = date("Y");
+		$con=mysqli_connect("localhost","root","","dmine") or die ('I cannot connect to the database because: ' . mysql_error());
+		$response = array();
+		
+		$query = "INSERT INTO students(roll_no,password,name,email,division,batch,year) VALUES ('$rollno','$password','$name','$email','$division','$batch','$year')";
+			if($password==$cpassword)
+			{
+				if(mysqli_query($con,$query))
+		        {	
+					$DBName=$rollno;
+					$sql = "CREATE DATABASE $DBName";
+					if ($conn->query($sql) === TRUE) {
+						$response['registration_success'] = true;
+					} else {
+						$response['registraion_success'] = false;
+						$response['registration_error'] = "Error creating database: " . $conn->error;
+					}
+		        }
+		        else
+		        {
+		        	$response['registration_success'] = false;
+					$response['registration_error'] = "Error: ".$con->error;
+		        }
+				
+			}else{
+				$response['registraion_success'] = false;
+				$response['registration_error'] = "Passwords did not match";
+			}
+			echo json_encode($response);
+
+	break;
+	
+	case "logout":
+		session_start();
+		unset($_SESSION['roll_no']);
+		session_destroy();
+		break;
     default:
         echo "Nothing to show";
 }
