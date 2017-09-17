@@ -131,8 +131,8 @@ case "SelectExecution":
     {
         $result=mysqli_query($conn,$Sel_Cmd);
 
-        echo "<br>";
-        echo "<table class = 'w3-table w3-striped w3-hoverable w3-border-left w3-border-right w3-border-bottom'>";
+        echo "<br><br>";
+        echo "<p><table class = 'w3-table w3-striped w3-hoverable w3-border-left w3-border-right w3-border-bottom'>";
         echo "<tr class='w3-blue'>";
         while ($fieldinfo=mysqli_fetch_field($result))
         {
@@ -155,8 +155,8 @@ case "SelectExecution":
             echo "</tr>";
 
         }
-        echo "</table>";
-        echo "<br> <br>";
+        echo "</table></p>";
+      
         $result->free();
 
     }
@@ -373,7 +373,7 @@ case "selectall":
 	{
 		$result=mysqli_query($conn,$query_Stat);
 
-		
+
 		while($data = mysqli_fetch_row($result))
 		{
 			echo "<tr>";
@@ -388,7 +388,7 @@ case "selectall":
 			{
 
 				echo "'".$data[$i]."',";
-				
+
 			}
 			echo")\">update</button></td>";
 			echo "</tr>";
@@ -419,11 +419,11 @@ case "updateselectall":
 			echo"<th></th>";
 		}
 		echo "<th></th></tr>";
-			
+
 		while($data = mysqli_fetch_array($result,MYSQL_BOTH))
 		{
-			
-			
+
+
 			echo "<tr>";
 
 			for($i=0;$i<count($data)-count($data)/2;$i++)
@@ -433,8 +433,8 @@ case "updateselectall":
             echo "<td><button id='' class='w3-btn w3-round-xxlarge w3-small w3-blue-grey' onclick=\"update('".$primarykeyname."',".$data[$primarykeyname].")\">Update</button></td>";
 			echo "</tr>";
 		}
-		
-		
+
+
 	}
 	else {
 		echo "Database does not exist";
@@ -475,18 +475,18 @@ case "updatemodal":
             {
                 echo"<td ><input id='iv$i' class='w3-hide' type='text' value='".$data[$i]."'></td>";
             }
-            
+
 			echo "<tr class='w3-hide'><td><input type='text' id='count' value='".count($data)."'></td></tr>";
 			echo "</tr>";
 		}
-		
+
         $result->free();
     }
     else {
         echo "Database does not exist";
     }
 	break;
-	
+
 case "updatevalues":
 	$DB_Name=$_POST['dbName'];
 	$query_Stat=$_POST['Query'];
@@ -496,7 +496,7 @@ case "updatevalues":
 			echo "Values updated Successfully";
 		}
 		else{
-			echo "Error occured. Try again.."; 
+			echo "Error occured. Try again..";
 		}
 	}
 	else {
@@ -523,11 +523,11 @@ case "deleteselectall":
 			echo"<th></th>";
 		}
 		echo "<th></th></tr>";
-			
+
 		while($data = mysqli_fetch_array($result,MYSQL_BOTH))
 		{
-			
-			
+
+
 			echo "<tr>";
 
 			for($i=0;$i<count($data)-count($data)/2;$i++)
@@ -537,8 +537,8 @@ case "deleteselectall":
             echo "<td><button id='' class='w3-btn w3-round-xxlarge w3-small w3-blue-grey' onclick=\"deleterow('".$primarykeyname."',".$data[$primarykeyname].")\">Delete</button></td>";
 			echo "</tr>";
 		}
-		
-		
+
+
 	}
 	else {
 		echo "Database does not exist";
@@ -571,7 +571,7 @@ case "deleteselectall":
 			echo "Row deleted succesfully";
 		}
 		else{
-			echo "Error occured. Try again.."; 
+			echo "Error occured. Try again..";
 		}
 	}
 	else {
@@ -641,6 +641,7 @@ case "deleteselectall":
             echo "Database does not exist";
         }
         break;
+		
 	case "login":
 	$roll_no=$_POST['roll_no'];
 	$password=$_POST['password'];
@@ -716,6 +717,7 @@ case "deleteselectall":
 		unset($_SESSION['roll_no']);
 		session_destroy();
 		break;
+
     default:
         echo "Nothing to show";
 }
