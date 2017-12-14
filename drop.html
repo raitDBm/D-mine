@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RAIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        function DropdownFunc(x) {
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += "w3-signal-red";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace("w3-signal-red", "");
+            }
+        }
+
+        function showANDhideBox(x){
+
+            if (x.style.display === 'none') {
+                x.style.display = 'block';
+            } else {
+                x.style.display = 'none';
+            }
+
+        }
+
+
+        function logout()
+        {
+          var tago = "logout";
+          var dataValues  = 'tag='+tago;
+          $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataValues,
+          success: function(result){
+            document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+            setInterval(function(){window.location.replace("login.html")},2000);
+          }
+          });
+        }
+
+        function GetTbList()
+        {
+            var selectobject=document.getElementById("tbDropDown");
+            for (var i = selectobject.length - 1; i >= 1; i--){
+                selectobject.options[i] = null;
+            }
+            var tago="TbList";
+            var dataString = 'tag='+ tago;
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                dataType: 'json',
+                data: dataString,
+                success: function(result){
+                    var countItem = Object.keys(result).length;
+
+                    for (var i = 0; i < countItem; i++) {
+                        $('#tbDropDown')
+                            .append(
+
+                                '<option value="' + result[i] + '">' + result[i] + '</option>'
+                            );
+                    }
+                }
+            });
+        }
+
+        function getNO()
+        {
+          var tago="getNO";
+          var dataString = 'tag='+ tago;
+
+              $.ajax({
+                  type: "POST",
+                  url: "queryExecutor.php",
+                  data: dataString,
+                  cache: false,
+                  success: function(result){
+
+                      document.getElementById("studentNo").innerHTML=result;
+
+                  }
+              });
+        }
+
+        //when drop button is clicked this logic will run
+        $(document).ready(function(){
+            $("#dropT").click(function(){
+                var alertMsg="";
+                var dbname = $('#dbDropDown').val();
+                var tname = $('#tbDropDown').val();
+                var query = "DROP TABLE "+tname+";";
+                var tago="DropTable";
+                var dataString = 'tag='+ tago + '&Query='+ query+'&dbName='+ dbname + '&tName='+ tname;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "queryExecutor.php",
+                        data: dataString,
+                        cache: false,
+                        success: function(result){
+                            alertMsg=result;
+                            var cmd = "DROP TABLE '"+tname+"';";
+                            $("#alertBoxMain").show();
+                            document.getElementById("alertBox").innerHTML=alertMsg;
+                            document.getElementById("cmdWindow").innerHTML=cmd;
+                        }
+                    });
+
+
+            });
+        });
+
+
+
+        $(document).ready(function(){
+            $("#RESET").click(function(){
+                location.reload();
+            });
+        });
+
+    </script>
+
+</head>
+<body onload="GetTbList(); getNO();">
+
+
+    <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
+        <br>
+        <br>
+        <div class="w3-container w3-center ">
+          <i class="fa fa-user-circle w3-jumbo "></i>
+          <p id = "studentNo"></p>
+          <hr>
+        </div>
+
+        <a href="index.html"><i class="fa fa-home"></i> HOME</a>
+     <div class="w3-accordion">
+      <a onclick="DropdownFunc(ddl)" href="#">
+      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
+      </a>
+
+      <div id="ddl" class="w3-accordion-content w3-white">
+       <!--DDL-CREATE-->
+         <div class="w3-accordion">
+            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+         </div>
+    <!--DDL-ALTER-->
+        <div class="w3-accordion">
+                <a  href="alter.html">
+                    <i class="fa fa-angle-right"></i> Alter Table
+                </a>
+         </div>
+          <!--DDL-Drop-->
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
+          <!--DDL-Truncate-->
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+       </div>
+
+
+
+     </div>
+
+        <div class="w3-accordion">
+            <a onclick="DropdownFunc(dml)" href="#">
+                <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="dml" class="w3-accordion-content w3-white">
+                <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+                <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+                <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+                <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
+            </div>
+        </div>
+
+        <div class="w3-accordion">
+
+            <a onclick="DropdownFunc(alter_view)" href="#">
+                <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="alter_view" class="w3-accordion-content w3-white"   >
+                <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+                <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+                <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
+            </div>
+
+        </div>
+
+        <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+
+        <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+        <a href="#"><i class="fa fa-globe"></i> HELP</a>
+  </nav>
+<!-- side navigation bar end -->
+
+  <div class="w3-main" style="margin-left:190px">
+
+    <!-- Logo and all start -->
+    <header class="w3-container w3-light-grey w3-border-bottom">
+		<h3 id="topheader"><img src="images/logo.png" height="40px">
+    <button class="w3-button w3-round-xxlarge  w3-right w3-large" onclick="logout();" >Logout <i class="fa fa-power-off"></i></button></h3>
+    </header>
+    <!-- Logo and all end -->
+
+    <div id="mainWindow">
+      <div class="w3-layout-container">
+
+        <!-- Query view section start-->
+        <div class="w3-layout-container">
+            <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey" style="width:100%; height: 50px;">
+              <p id="cmdWindow"><span class="w3-text-red"> </span></p>
+            </div>
+        </div>
+        <!-- Query view section end-->
+
+        <div class="w3-layout-container">
+          <!-- Action section start -->
+            <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
+
+              <p><i class="	fa fa-angle-double-right"></i> Drop Engine</p>
+
+              <!-- Alert Box Section by default its hidden start-->
+                <div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
+                  <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+                  <p id="alertBox"></p>
+                </div>
+              <!-- Alert Box Section by default its hidden end -->
+				<div class="w3-container w3-border">
+
+                    <div><p><label class="w3-label w3-text-blue">Select Table<span class="w3-text-red">*</span>:</label>
+
+
+                                <select id = "tbDropDown" name="TDD">
+                                    <option value = 0>Select Table</option>
+                                </select></p>
+
+                    </div>
+
+
+                  <p class="w3-right"><button id="dropT" class="w3-btn w3-signal-red w3-round-xlarge">Drop Table</button>
+
+                      <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge">Refresh</button></p>
+
+                </div>
+                <br>
+            </div>
+            <!-- Action section end -->
+
+            <!-- flow Chart section start -->
+            <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
+                <p>
+                    <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
+                <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)" >
+                <div class="w3-tag w3-round w3-green w3-border w3-border-white">
+                    Description :
+                </div>
+            </div></p>
+                <p id ="description">The MySQL DROP TABLE statement allows you to remove or delete a table from the MySQL database.</p>
+            </div>
+            </p>
+
+                <p>
+                    <div class="w3-panel w3-pale-blue w3-border-left w3-border-blue">
+                <p> <div class="w3-tag w3-round w3-blue" style="padding:3px" onclick="showANDhideBox(syntax)">
+                <div class="w3-tag w3-round w3-blue w3-border w3-border-white">
+                    Syntax :
+                </div>
+            </div></p>
+                <p id="syntax" >
+                    DROP TABLE table_name;
+                </p>
+            </div>
+              </p>
+
+              <p>
+                  <div class="w3-panel w3-pale-red w3-border-left w3-border-red">
+              <p> <div class="w3-tag w3-round w3-red" style="padding:3px" onclick="showANDhideBox(example)">
+              <div class="w3-tag w3-round w3-red w3-border w3-border-white">
+                  Example :
+              </div>
+          </div></p>
+              <p id="example">
+                  <b>Drop One Table</b><br>
+                  DROP TABLE customers;
+                  <br><br>
+                  <b>Drop Multiple Tables</b><br>
+                  DROP TABLE customers, suppliers;
+
+              </p>
+          </div>
+            </p>
+            </div>
+            <!-- flow Chart section end -->
+
+        </div>
+    <footer class="w3-container w3-light-grey w3-border-top">
+      <p class=" w3-right">Copyright © 2017 All rights reserved</p>
+    </footer>
+  </div>
+
+
+
+</body>
+</html>

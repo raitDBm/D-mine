@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/w3.css">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+<style>
+    textarea{
+
+    background: url(2cOaJ.png);
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 10px;
+    border-color:#ccc;
+    }
+
+</style>
+    <script>
+        function DropdownFunc(x) {
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+                x.previousElementSibling.className += "w3-signal-red";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+                x.previousElementSibling.className =
+                    x.previousElementSibling.className.replace("w3-signal-red", "");
+            }
+        }
+
+        function getText(elem) {
+            if(elem.tagName === "TEXTAREA") {
+                return elem.value.substring(elem.selectionStart,
+                    elem.selectionEnd);
+            }
+            return null;
+        }
+
+        setInterval(function() {
+            var txt = getText(document.getElementById('sqlcmdarea'))
+            document.getElementById('hiddenBox').value =txt;
+        }, 100);
+
+
+        function showFullTable(Tb)
+        {
+
+
+            var SelCmd = 'select * from '+Tb;
+            var tago="SelectExecution";
+            var dataString = 'tag='+ tago + '&SelCmd='+ SelCmd ;
+
+
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+
+                  document.getElementById('id01').style.display='block'
+                  document.getElementById("selTableShow").innerHTML=result;
+
+                }
+            });
+
+        }
+
+        function logout()
+        {
+          var tago = "logout";
+          var dataValues  = 'tag='+tago;
+          $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataValues,
+          success: function(result){
+            document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+            setInterval(function(){window.location.replace("login.html")},2000);
+          }
+          });
+        }
+
+
+
+        function GetTbTagList()
+        {
+            document.getElementById("tbTags").innerHTML="";
+            var tago="TbList";
+            var dataString = 'tag='+ tago ;
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                dataType: 'json',
+                data: dataString,
+                success: function(result){
+                    var countItem = Object.keys(result).length;
+
+                    for (var i = 0; i < countItem; i++) {
+                        $('#tbTags')
+                            .append(
+
+                                '<div id="'+ result[i] +'" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="showFullTable(this.id)">'
+                                + result[i] +
+                                '</div>&nbsp'
+
+
+                            );
+                    }
+
+                }
+            });
+        }
+
+        //when create button is clicked this logic send data and recieve result from queryExecutor
+        $(document).ready(function(){
+            $("#run").click(function(){
+
+                var alertMsg="";
+                var masterBoxCmd = $('#hiddenBox').val();
+                var dataString = '&Query='+ masterBoxCmd ;
+                if(masterBoxCmd=='')
+                {
+                    alertMsg="Please select query  .... ";
+                    $("#alertBoxMain").show();
+                    document.getElementById("alertBox").innerHTML=alertMsg;
+
+                }
+                else
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "masterBoxExecutor.php",
+                        data: dataString,
+                        success: function(result){
+
+                          document.getElementById('id01').style.display='block'
+                          document.getElementById("selTableShow").innerHTML=result;
+
+
+                        }
+                    });
+                }
+            });
+        });
+
+        //when reset button is clicked this logic reset input field and alertmsg
+        $(document).ready(function(){
+            $("#clear").click(function(){
+                var inputfield= document.getElementById('sqlcmdarea');
+                inputfield.value= inputfield.defaultValue;
+                var cmd = "SELECT ";
+                document.getElementById("cmdWindow").innerHTML=cmd;
+                document.getElementById("tbTags").innerHTML="";
+                document.getElementById("allShow").innerHTML="";
+            });
+        });
+
+
+        function getNO()
+        {
+          var tago="getNO";
+          var dataString = 'tag='+ tago;
+
+              $.ajax({
+                  type: "POST",
+                  url: "queryExecutor.php",
+                  data: dataString,
+                  cache: false,
+                  success: function(result){
+
+                      document.getElementById("studentNo").innerHTML=result;
+
+                  }
+              });
+        }
+
+    </script>
+
+
+
+
+
+</head>
+<body onload="GetTbTagList(); getNO();">
+
+
+<!-- side navigation bar start -->
+<nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
+    <br>
+    <br>
+    <div class="w3-container w3-center ">
+      <i class="fa fa-user-circle w3-jumbo "></i>
+      <p id = "studentNo"></p>
+      <hr>
+    </div>
+    <a href="index.html"><i class="fa fa-home"></i> HOME</a>
+    <div class="w3-accordion">
+        <a onclick="DropdownFunc(ddl)" href="#">
+            <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
+        </a>
+
+        <div id="ddl" class="w3-accordion-content w3-white">
+         <!--DDL-CREATE-->
+           <div class="w3-accordion">
+              <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+           </div>
+      <!--DDL-ALTER-->
+          <div class="w3-accordion">
+                  <a  href="alter.html">
+                      <i class="fa fa-angle-right"></i> Alter Table
+                  </a>
+           </div>
+            <!--DDL-Drop-->
+            <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
+            <!--DDL-Truncate-->
+            <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+         </div>
+
+
+
+    </div>
+
+    <div class="w3-accordion">
+        <a onclick="DropdownFunc(dml)" href="#">
+            <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
+        </a>
+        <div id="dml" class="w3-accordion-content w3-white">
+            <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+            <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+            <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+            <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
+        </div>
+    </div>
+
+    <div class="w3-accordion">
+
+        <a onclick="DropdownFunc(alter_view)" href="#">
+            <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
+        </a>
+        <div id="alter_view" class="w3-accordion-content w3-white"   >
+            <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+            <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+            <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
+        </div>
+
+    </div>
+
+
+    <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+
+    <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+    <a href="#"><i class="fa fa-globe"></i> HELP</a>
+</nav>
+<!-- side navigation bar end -->
+
+
+<div class="w3-main" style="margin-left:190px">
+    <!-- Logo and all start -->
+    <header class="w3-container w3-light-grey w3-border-bottom">
+		<h3 id="topheader"><img src="images/logo.png" height="40px">
+    <button class="w3-button w3-round-xxlarge  w3-right w3-large" onclick="logout();" >Logout <i class="fa fa-power-off"></i></button></h3>
+    </header>
+    <!-- Logo and all end -->
+
+    <div id="mainWindow">
+
+
+            <div class="w3-container">
+                <!-- Action section start -->
+                <div id="actionWindow" class="w3-container "  >
+
+                    <!-- Alert Box Section by default its hidden start-->
+                    <div id="alertBoxMain" class="w3-panel w3-pale-red   w3-leftbar w3-border-red" style="display:none">
+                        <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+                        <p id="alertBox"></p>
+                    </div>
+                    <!-- Alert Box Section by default its hidden end-->
+
+                    <input id ="hiddenBox" type="text" style="display:none">
+
+                    <p><div class="w3-container  w3-border  " >
+                        <p>
+                            <span><label class="w3-label w3-text-blue">Table Names :&nbsp</label></span>
+                            <span id = "tbTags">
+
+                            </span>
+                        </p>
+
+                        <textarea class="w3-dark-gray" id ="sqlcmdarea" name="message" rows="11" cols="120" style="width:100%" autofocus></textarea>
+                        <p><button id = "run" class="w3-btn w3-right  w3-signal-red">RUN</button></p>
+
+                        <br>
+
+                        <hr>
+                        <div id = "outputBox" class="w3-container">
+                            <div class="w3-center " style="opacity: 0.4"><h3 class=" w3-margin "><i class="fa fa-refresh fa-spin" style="font-size:24px"></i> .. <b>Tag Box</b> ..
+                                <i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h3><br><br><br><br><br>
+                            </div>
+                        </div>
+                    </div></p>
+
+
+                    <br>
+                </div>
+                <!-- Action section end -->
+
+
+
+</div>
+
+
+
+<div id="id01" class="w3-modal">
+  <div class="w3-modal-content">
+    <div class="w3-container">
+      <span onclick="document.getElementById('id01').style.display='none'" class=" w3-white w3-button w3-display-topright"><i class="fa fa-close" style="font-size:25px;color:red"></i></span>
+      <div id="selTableShow" class="w3-container" style =" overflow: scroll; overflow-y: hidden;">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="w3-container w3-light-grey w3-border-top">
+    <p class=" w3-right">Copyright © 2017 All rights reserved</p>
+</footer>
+</div>
+
+
+
+</body>
+</html>

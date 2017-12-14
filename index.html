@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-red.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
   <script>
@@ -22,6 +23,20 @@
         }
       }
 
+	function logout()
+	{
+		var tago = "logout";
+		var dataValues  = 'tag='+tago;
+		$.ajax({
+		type: "POST",
+		url: "queryExecutor.php",
+		data: dataValues,
+		success: function(result){
+			document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+			setInterval(function(){window.location.replace("login.html")},2000);
+		}
+		});
+	}
   </script>
 
 
@@ -34,85 +49,64 @@
     <a href="index.html"><i class="fa fa-home"></i> HOME</a>
      <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
-      <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
+      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
       </a>
-	 
+
       <div id="ddl" class="w3-accordion-content w3-white">
-	     <!--DDL-CREATE-->
-         <div class="w3-accordion">           
-		 
-          <a onclick="DropdownFunc(dropcreate)" href="#">
-            <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
+       <!--DDL-CREATE-->
+         <div class="w3-accordion">
+            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+         </div>
+    <!--DDL-ALTER-->
+        <div class="w3-accordion">
+                <a  href="alter.html">
+                    <i class="fa fa-angle-right"></i> Alter Table
+                </a>
+         </div>
+          <!--DDL-Drop-->
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
+          <!--DDL-Truncate-->
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+       </div>
+
+
+
+     </div>
+
+      <div class="w3-accordion">
+          <a onclick="DropdownFunc(dml)" href="#">
+              <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
           </a>
-          <div id="dropcreate" class="w3-accordion-content w3-white"   >
-            <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
+          <div id="dml" class="w3-accordion-content w3-white">
+              <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+              <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+              <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+              <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
           </div>
-  
-		</div>
-		<!--DDL-ALTER-->
-		    <div class="w3-accordion">
+      </div>
 
-          <a  href="alter.html">
-            <i class="fa fa-angle-right"></i> Alter
+      <div class="w3-accordion">
+
+          <a onclick="DropdownFunc(alter_view)" href="#">
+              <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
           </a>
-          <div id="#" class="w3-accordion-content w3-white"  >
-
-            <a href="#"><i class="fa fa-toggle-right"></i> Add</a>
-            <a href="#"><i class="fa fa-toggle-right"></i> Modify</a>
-			 <a href="#"><i class="fa fa-toggle-right"></i> Drop</a>
+          <div id="alter_view" class="w3-accordion-content w3-white"   >
+              <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+              <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+              <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
           </div>
-		</div>
-		<!--DDL-Drop-->
-		<a onclick="DropdownFunc(dropdrop)" href="#">
-			<i class="fa fa-angle-right"></i> Drop<i class="fa fa-caret-down"></i>
-		</a> 
-		<div id="dropdrop" class="w3-accordion-content w3-white"  >
-			<a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
-			<a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-		</div>
-		<!--DDL-Truncate-->
-        <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
 
       </div>
-	  
 
-      
-    </div>
-    <div class="w3-accordion">
-      <a onclick="DropdownFunc(dml)" href="#">
-      <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="dml" class="w3-accordion-content w3-white ">
-          <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
-          <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
-          <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
-          <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
-      </div>
-
-    </div>
-    <div class="w3-accordion">
-      <a onclick="DropdownFunc(view)" href="#">
-      <i class="fa fa-plus-square-o"></i> VIEW <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="view" class="w3-accordion-content w3-white ">
-          <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
-          <a href="#" onclick="DropdownFunc(alter_view)"><i class="fa fa-angle-right"></i> Alter view <i class="fa fa-caret-down"></i> </a>
-          <div id="alter_view" class="w3-accordion-content w3-white">
-          <a href="Drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
-          <a href="Rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
-          </div>
-         
-      </div>
-      
-    </div>
-
-    <a href="#"><i class="fa fa-globe"></i> HELP</a>
+      <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+    
+      <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+      <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 
   <div class="w3-main" style="margin-left:160px">
     <header class="w3-container w3-light-grey w3-border-bottom">
-      <h3>LOGO</h3>
+		<h3 id="topheader"><img src="images/logo.png" height="40px"> <button class="w3-btn w3-round-xlarge w3-signal-red w3-right w3-medium" onclick="logout();" >Logout</button></h3>
     </header>
     <div id="mainWindow">
       <div class="w3-layout-container">

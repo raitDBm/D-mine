@@ -10,128 +10,94 @@ switch ($tags)
 {
 case "addcol":
 //echo "you r trying to add column!!";
-$DBName=$_POST['db'];
-$tb=$_POST['tb'];
-$cn=$_POST['cn'];
-$dt=$_POST['dt'];
-$size=$_POST['size'];
-if($cn!='' && $dt!='' && $size!='')
-{
-  $sql="ALTER TABLE $tb ADD $cn $dt($size);";
-  if($conn->select_db($DBName)){
-  if($conn->query($sql) === TRUE)
-  {
-    echo "column added successfully,refresh to see result...";
-  }
-  else
-    echo "Error: " . $conn->error;
-}
-}
-else
-echo "Enter value...";
-break;
 
-case "createDatabase":
-
-    $DBName=$_POST['dbName'];
-    $sql = "CREATE DATABASE $DBName";
-    if ($conn->query($sql) === TRUE) {
-      echo "Database created successfully";
-    } else {
-      echo "Error creating database: " . $conn->error;
-    }
-    $conn->close();
-    break;
-
-case "selectDB":
-    $DBName=$_POST['dbName'];
-    if($conn->select_db($DBName))
+    $tb=$_POST['tb'];
+    $cn=$_POST['cn'];
+    $dt=$_POST['dt'];
+    $size=$_POST['size'];
+    if($cn!='' && $dt!='' && $size!='')
     {
-      echo "Database selected successfully..!";
+      $sql="ALTER TABLE $tb ADD $cn $dt($size);";
+
+      if($conn->query($sql) === TRUE)
+      {
+        echo "column added successfully,refresh to see result...";
+      }
+      else
+        echo "Error: " . $conn->error;
+
     }
-    else {
-      echo "Database is not selected..!";
-    }
+    else
+    echo "Enter value...";
     break;
+
+
+
 
 case "createTable":
-    $DB_Name=$_POST['db_Name'];
+
     $query_Stat=$_POST['Query'];
-    if($conn->select_db($DB_Name))
-    {
+
+
       $sql = $query_Stat;
       if ($conn->query($sql) === TRUE) {
           echo "Table created successfully";
       } else {
           echo "Error creating table: " . $conn->error;
       }
-    }
-    else {
-      echo "Database is not selected..!";
-    }
+
+
     break;
 
 case "DropTable":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-    {
+
       $sql = $query_Stat;
       if ($conn->query($sql) === TRUE) {
           echo "Table dropped successfully";
       } else {
           echo "Error dropping table: " . $conn->error;
       }
-    }
-    else {
-      echo "Database is not selected..!";
-    }
+
     break;
 
 
 case "DropDatabase":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-    {
+
       $sql = $query_Stat;
       if ($conn->query($sql) === TRUE) {
           echo "Database dropped successfully";
       } else {
           echo "Error dropping Database: " . $conn->error;
       }
-    }
-    else {
-      echo "Database does not exist..!";
-    }
+
+
     break;
 
 case "TruncateTable":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-	{
+
 		if($conn->query($query_Stat)=== TRUE){
 			echo "Table truncated succesfully";
 		}
 		else{
 			echo "error truncating database";
 		}
-	}
-	else {
-		echo "Database does not exist";
-	}
+
 	break;
 
 case "SelectExecution":
   $Sel_Cmd=$_POST['SelCmd'];
-  $DB_Name=$_POST['dbName'];
 
-    if($conn->select_db($DB_Name))
-    {
         $result=mysqli_query($conn,$Sel_Cmd);
 
-        echo "<tr>";
+        echo "<br><br>";
+        echo "<p><table class = 'w3-table w3-striped w3-hoverable w3-border-left w3-border-right w3-border-bottom'>";
+        echo "<tr class='w3-blue'>";
         while ($fieldinfo=mysqli_fetch_field($result))
         {
 
@@ -153,40 +119,20 @@ case "SelectExecution":
             echo "</tr>";
 
         }
+        echo "</table></p>";
+
         $result->free();
 
-    }
-    else {
-        echo "Database does not exist";
-    }
+
     $conn->close();
   break;
 
-  case "DbDropdownList":
+
+    case "TbList":
+
         $list = array();
-        $query = "SHOW DATABASES";
-        $result = $conn->query($query);
-        $rowCount = $result->num_rows;
-
-        /* fetch associative array */
-        for($i=0; $i<$rowCount; $i++)
-        {
-            $result->data_seek($i);
-            $row = $result->fetch_array(MYSQL_NUM);
-            $list[$i] = $row[0];
-
-        }
-        echo json_encode($list);
-        /* free result set */
-        $result->free();
-        break;
-
-    case "TbDropdownList":
-        $DB_Name=$_POST['dbName'];
-        $list = array();
-        if($conn->select_db($DB_Name))
-        {
-            $query = "show tables from $DB_Name";
+        $DBName = $_SESSION["roll_no"];
+            $query = "show tables from $DBName";
             $result = $conn->query($query);
             $rowCount = $result->num_rows;
             for($i=0; $i<$rowCount; $i++)
@@ -198,21 +144,17 @@ case "SelectExecution":
             }
             echo json_encode($list);
 
-        }
-        else {
-            echo "Database is not selected..!";
-        }
+
 
         /* free result set */
         $result->free();
         break;
 
     case "desc":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
         $tablename=$_POST['tName'];
-        if($conn->select_db($DB_Name))
-        {
+
             $result=mysqli_query($conn,$query_Stat);
             /*echo "<br><b>".$tablename." structure</b><br><br>";*/
             echo "
@@ -238,115 +180,94 @@ case "SelectExecution":
                 echo "</tr>";
             }
 
-        }
-        else {
-            echo "Database does not exist";
-        }
+
         break;
 
     case "addColumn":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             if($conn->query($query_Stat)=== TRUE){
                 echo "columns addded succesfully";
             }
             else{
                 echo "error occured while adding tables. Try again..";
             }
-        }
-        else {
-            echo "Database does not exist";
-        }
+
         break;
 
 
     case "modifyColumn":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             $sql = $query_Stat;
             if ($conn->query($sql) === TRUE) {
                 echo "Column(s) modified successfully";
             } else {
                 echo "Error while modifying column(s) " . $conn->error;
             }
-        }
-        else {
-            echo "Database is not selected..!";
-        }
+
 
         break;
 
     case "renameTable":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             if($conn->query($query_Stat)===TRUE){
                 echo "Table renamed successfully";
             }
             else{
-                echo "error occured while renaming table. Try again..";
+                echo "error occured while renaming table. Try again..".$conn->error;
             }
-        }
-        else {
-            echo "Database does not exist";
-        }
+
+
         break;
 
     case "dropColumn":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             if($conn->query($query_Stat)===TRUE){
                 echo "Column Dropped successfully";
             }
             else{
                 echo "Error occured while dropping the column. Try again..";
             }
-        }
-        else {
-            echo "Database does not exist";
-        }
+
+
         break;
 
     case "descTbInsertion":
 
-        $DB_Name = $_POST['dbName'];
+
         $tb_Name = $_POST['tbName'];
         $list = array();
-        if($conn->select_db($DB_Name))
-        {
+
             $query = "DESCRIBE $tb_Name";
             $result = $conn->query($query);
             $rowCount = $result->num_rows;
             for($i=0; $i<$rowCount; $i++)
             {
                 $result->data_seek($i);
+                $finfo = $result->fetch_field_direct(1);
                 $row = $result->fetch_array(MYSQL_NUM);
                 $list[$i] = $row[0];
             }
             echo json_encode($list);
 
-        }
-        else {
-            echo "Database is not selected..!";
-        }
+
 
         /* free result set */
         $result->free();
         break;
 
     case "insertionDB":
-        $DB_Name = $_POST['dbName'];
+
         $tb_Name = $_POST['tbName'];
         $sql = $_POST['queryInsert'];
-        if($conn->select_db($DB_Name))
-        {
+
             if ($conn->query($sql) === TRUE) {
                 echo "New record created successfully";
             } else {
@@ -354,22 +275,18 @@ case "SelectExecution":
             }
 
 
-        }
-        else {
-            echo "Database is not selected..!";
-        }
+
         $conn->close();
         break;
 
 case "selectall":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
 	$tablename=$_POST['tName'];
-	if($conn->select_db($DB_Name))
-	{
+
 		$result=mysqli_query($conn,$query_Stat);
 
-		
+
 		while($data = mysqli_fetch_row($result))
 		{
 			echo "<tr>";
@@ -384,26 +301,21 @@ case "selectall":
 			{
 
 				echo "'".$data[$i]."',";
-				
+
 			}
 			echo")\">update</button></td>";
 			echo "</tr>";
 		}
 
 
-	}
-	else {
-		echo "Database does not exist";
-	}
+
 	break;
 case "updateselectall":
-	$DB_Name=$_POST['dbName'];
 	$query_Stat=$_POST['Query'];
 	$tablename=$_POST['tName'];
-	if($conn->select_db($DB_Name))
-	{
+
 		$result=mysqli_query($conn,$query_Stat);
-		$primarykey = mysqli_query($conn,"SHOW KEYS FROM $tablename WHERE Key_name = 'PRIMARY'");
+		$primarykey = mysqli_query($conn,"SHOW index FROM $tablename WHERE Key_name = 'PRIMARY'");
 		$primarykeydata = mysqli_fetch_row($primarykey);
 		$primarykeyname = $primarykeydata[4];
 
@@ -415,11 +327,11 @@ case "updateselectall":
 			echo"<th></th>";
 		}
 		echo "<th></th></tr>";
-			
+
 		while($data = mysqli_fetch_array($result,MYSQL_BOTH))
 		{
-			
-			
+
+
 			echo "<tr>";
 
 			for($i=0;$i<count($data)-count($data)/2;$i++)
@@ -429,25 +341,20 @@ case "updateselectall":
             echo "<td><button id='' class='w3-btn w3-round-xxlarge w3-small w3-blue-grey' onclick=\"update('".$primarykeyname."',".$data[$primarykeyname].")\">Update</button></td>";
 			echo "</tr>";
 		}
-		
-		
-	}
-	else {
-		echo "Database does not exist";
-	}
+
+
+
 	break;
 
+	
 case "updatemodal":
 
-
-	$DB_Name=$_POST['dbName'];
 	$query_Stat=$_POST['Query'];
 	$tablename=$_POST['tName'];
 	$pkeyname = $_POST['pkeyname'];
 	$pkeyval = $_POST['pkeyval'];
 
-	if($conn->select_db($DB_Name))
-    {
+
         $result=mysqli_query($conn,$query_Stat);
         echo "<tr>";
 		$i=0;
@@ -471,43 +378,35 @@ case "updatemodal":
             {
                 echo"<td ><input id='iv$i' class='w3-hide' type='text' value='".$data[$i]."'></td>";
             }
-            
+
 			echo "<tr class='w3-hide'><td><input type='text' id='count' value='".count($data)."'></td></tr>";
 			echo "</tr>";
 		}
-		
+
         $result->free();
-    }
-    else {
-        echo "Database does not exist";
-    }
+
 	break;
-	
+
 case "updatevalues":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-	{
+
 		if($conn->query($query_Stat)===TRUE){
 			echo "Values updated Successfully";
 		}
 		else{
-			echo "Error occured. Try again.."; 
+			echo "Error occured. Try again..";
 		}
-	}
-	else {
-		echo "Database does not exist";
-	}
+
 	break;
 
 case "deleteselectall":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
 	$tablename=$_POST['tName'];
-	if($conn->select_db($DB_Name))
-	{
+
 		$result=mysqli_query($conn,$query_Stat);
-		$primarykey = mysqli_query($conn,"SHOW KEYS FROM $tablename WHERE Key_name = 'PRIMARY'");
+		$primarykey = mysqli_query($conn,"SHOW index FROM $tablename WHERE Key_name = 'PRIMARY'");
 		$primarykeydata = mysqli_fetch_row($primarykey);
 		$primarykeyname = $primarykeydata[4];
 
@@ -519,11 +418,11 @@ case "deleteselectall":
 			echo"<th></th>";
 		}
 		echo "<th></th></tr>";
-			
+
 		while($data = mysqli_fetch_array($result,MYSQL_BOTH))
 		{
-			
-			
+
+
 			echo "<tr>";
 
 			for($i=0;$i<count($data)-count($data)/2;$i++)
@@ -533,54 +432,42 @@ case "deleteselectall":
             echo "<td><button id='' class='w3-btn w3-round-xxlarge w3-small w3-blue-grey' onclick=\"deleterow('".$primarykeyname."',".$data[$primarykeyname].")\">Delete</button></td>";
 			echo "</tr>";
 		}
-		
-		
-	}
-	else {
-		echo "Database does not exist";
-	}
+
+
+
 	break;
 
     case "CreateViewExecution":
-        $DB_Name=$_POST['db_Name'];
+
         $query_Stat=$_POST['ViewCmd'];
-        if($conn->select_db($DB_Name))
-        {
+
             $sql = $query_Stat;
             if ($conn->query($sql) === TRUE) {
                 echo "View created successfully";
             } else {
                 echo "Error creating table: " . $conn->error;
             }
-        }
-        else {
-            echo "Database is not selected..!";
-        }
+
         break;
 
     case "delete":
-	$DB_Name=$_POST['dbName'];
+
 	$query_Stat=$_POST['Query'];
-	if($conn->select_db($DB_Name))
-	{
+
 		if($conn->query($query_Stat)===TRUE){
 			echo "Row deleted succesfully";
 		}
 		else{
-			echo "Error occured. Try again.."; 
+			echo "Error occured. Try again..";
 		}
-	}
-	else {
-		echo "Database does not exist";
-	}
+
 	break;
 
     case "dropView":
         $drop_view=$_POST['dpViewName'];
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             if(mysqli_query($conn,$query_Stat) == true)
             {
                 echo "View Dropped successfully";
@@ -589,18 +476,13 @@ case "deleteselectall":
             {
                 echo "View not exist in database";
             }
-        }
-        else
-        {
-            echo "Database does not exist";
-        }
+
         break;
 
     case "renameView":
-        $DB_Name=$_POST['dbName'];
+
         $query_Stat=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+
             if(mysqli_query($conn,$query_Stat) == true)
             {
                 echo "View Rename sucessfully";
@@ -609,18 +491,13 @@ case "deleteselectall":
             {
                 echo "View not exists in database";
             }
-        }
-        else
-        {
-            echo "Database does not exist";
-        }
+
         break;
 
     case "getviewslist":
-        $DB_Name=$_POST['dbName'];
-        $query=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
+            $DBName = $_SESSION["roll_no"];
+            $query="SHOW FULL TABLES IN $DBName WHERE TABLE_TYPE LIKE 'VIEW'";
+
             $result = $conn->query($query);
             $rowCount = $result->num_rows;
             echo "<option value=''>Select View</option>";
@@ -633,78 +510,34 @@ case "deleteselectall":
             }
             /* free result set */
             $result->free();
-        }else{
-            echo "Database does not exist";
-        }
-        break;
-	case "getColumns":
-        $DB_Name=$_POST['dbName'];
-        $tb_Name=$_POST['tbName'];
-        echo $tb_Name;
-        $query_Stat="select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '$tb_Name'";
-        // $list = array();tb
-        if($conn->select_db($DB_Name))
-        {
-            
-            $result = $conn->query($query_Stat);
-            $rowCount = $result->num_rows;
-            // echo "<option value='>Select Column</option>";
-            echo "<option value=''>Select Column</option>";
-            for($i=0; $i<$rowCount; $i++)
-            {
-                $result->data_seek($i);
-                $row = $result->fetch_array(MYSQL_NUM);
-                echo "<option value='".$row[0]."'>".$row[0]."</option>";
 
-            }
-            //echo json_encode($list);
+        break;
 
-        }
-        else {
-            echo "Database is not selected..!";
-        }
 
-        /* free result set */
-        $result->free();
-        break;
-        case "alter_index":
-        $DB_Name=$_POST['dbName'];
-        $query=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
-            if(mysqli_query($conn,$query) == true)
-            {
-                echo "constraint added sucessfully";
-            }
-            else
-            {
-                echo "constraint not added try again";
-            }
-        }
-        else
-        {
-            echo "Database is not selected";
-        }
-        break;
-        case "drop_index":
-        $DB_Name=$_POST['dbName'];
-        $query=$_POST['Query'];
-        if($conn->select_db($DB_Name))
-        {
-            if(mysqli_query($conn,$query) == true)
-            {
-                echo "constraint dropped sucessfully";
-            }
-            else
-            {
-                echo "constraint not dropped try again";
-            }
-        }
-        else
-        {
-            echo "Database is not selected";
-        }
-        break;
+	case "logout":
+		session_start();
+		unset($_SESSION['roll_no']);
+		session_destroy();
+		break;
+
+  case "getNO":
+
+      $id = $_SESSION['roll_no'];
+      $con2=mysqli_connect("localhost","root","","dmine") or die ('I cannot connect to the database because: ' . mysql_error());
+      $sql = "SELECT name, roll_no FROM students WHERE roll_no = '$id' ";
+      $result = $con2->query($sql);
+
+      if ($result->num_rows > 0) {
+          // output data of each row
+          $row = $result->fetch_array(MYSQLI_ASSOC);
+              echo $row["roll_no"]." ";
+
+      } else {
+          echo "";
+      }
+      $con2->close();
+      break;
+
     default:
         echo "Nothing to show";
 }

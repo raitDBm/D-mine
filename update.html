@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
-<body onload="GetDbDropdownList();">
+
 <style>
 /* The Modal (background) */
 .modal {
@@ -31,7 +31,7 @@
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 100%;
 }
 
 /* The Close Button */
@@ -61,7 +61,15 @@
           x.previousElementSibling.className.replace("w3-signal-red", "");
         }
       }
+    function showANDhideBox(x){
 
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+
+    }
       function accordion(id) {
             var x = document.getElementById(id);
             if (x.className.indexOf("w3-show") == -1) {
@@ -73,68 +81,34 @@
                 x.previousElementSibling.className.replace(" w3-light-grey", "");
             }
         }
-		
-		function GetDbDropdownList()
-        {
-            var tago="DbDropdownList";
-            var dataString = 'tag='+ tago;
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                dataType: 'json',
-                data: dataString,
-                success: function(result){
-                    var countItem = Object.keys(result).length;
-                    for (var i = 0; i < countItem; i++) {
-                        $('#dbnameInput')
-                            .append(
 
-                                '<option value="' + result[i] + '">' + result[i] + '</option>'
-                            );
-                    }
-                }
-            });
+        function logout()
+        {
+          var tago = "logout";
+          var dataValues  = 'tag='+tago;
+          $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataValues,
+          success: function(result){
+            document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+            setTimeout(function(){window.location.replace("login.html")},2000);
+          }
+          });
         }
 
-        function GetTbDropdownList(tdbName)
-        {
-            var selectobject=document.getElementById("TbnameInput");
-            for (var i = selectobject.length - 1; i >= 1; i--){
-                    selectobject.options[i] = null;
-            }
-            var tago="TbDropdownList";
-            var dataString = 'tag='+ tago + '&dbName='+ tdbName;
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                dataType: 'json',
-                data: dataString,
-                success: function(result){
-                    var countItem = Object.keys(result).length;
 
-                    for (var i = 0; i < countItem; i++) {
-                        $('#TbnameInput')
-                            .append(
-
-                                '<option value="' + result[i] + '">' + result[i] + '</option>'
-                            );
-                    }
-                }
-            });
-        }
-		
 		$(document).ready(function(){
-			
+
           $("#SUBMIT").click(function(){
             var alertMsg="";
-            dbname = $("#dbnameInput").val();
-            tname = $("#TbnameInput").val();
+            tname = $("#tbDropDown").val();
 			var query = "SELECT * FROM "+tname+";";
-			var tago="selectall";
-            var dataString = 'tag='+ tago + '&Query='+ query+'&dbName='+ dbname + '&tName='+ tname;
-            if(dbname=='' || tname=='')
+			var tago="updateselectall";
+            var dataString = 'tag='+ tago + '&Query='+ query+'&tName='+ tname;
+            if(tname==0)
             {
-                alertMsg="Please Fill All Field";
+                alertMsg="Please select a table first";
                 $("#alertBoxMain").show();
                 document.getElementById("alertBox").innerHTML=alertMsg;
             }
@@ -152,115 +126,223 @@
             }
         });
       });
-	  
-	  
-  </script>
 
-<!-- side navigation bar start -->  
-    <nav class="w3-sidenav w3-signal-red" style="width:160px;">
-	<br>
+		function update(pkeyname,pkeyval)
+		{
+			pkeyn=pkeyname;
+			pkeyv=pkeyval;
+			var query = "Select * from "+tname+" where "+pkeyname+"="+pkeyval;
+			var tago = "updatemodal";
+			var dataString = 'tag='+ tago + '&Query='+ query+'&tName='+ tname+'&pkeyname='+pkeyname+'&pkeyval='+pkeyval;
+			$.ajax({
+				type: "POST",
+				url: "queryExecutor.php",
+				data: dataString,
+				cache: false,
+				success: function(result){
+					alertMsg=result;
+					$("#id01").show();
+					$("#updatemodaltable").html(alertMsg);
+				}
+			});
+		}
+
+		function updatevalues()
+		{
+			var query = "Update "+tname+" set ";
+			var i=0;
+			var colname = "";
+			var visible="";
+			var invisible="";
+			var count = document.getElementById('count').value;
+			var flag = 0;
+			var tbl = document.getElementById('updatemodaltable');
+			var cells = tbl.rows['0'].getElementsByTagName('th');
+			for(i=0;i<count;i++)
+			{
+				visible=document.getElementById('v'+i).value;
+
+				invisible=document.getElementById('iv'+i).value;
+
+				colname=cells[i].innerHTML;
+				if(visible === invisible){
+					//do nothing
+				}
+				else{
+					if(flag==0){
+						query += colname + " = '" + visible + "'";
+						flag=1;
+					}else{
+						query += ", "+colname + " = '" + visible + "'";
+					}
+				}
+			}
+			query += " where "+pkeyn+" = "+pkeyv;
+			var tago = "updatevalues";
+			var dataString = 'tag='+ tago + '&Query='+ query+'&tName='+ tname;
+			$.ajax({
+				type: "POST",
+				url: "queryExecutor.php",
+				data: dataString,
+				cache: false,
+				success: function(result){
+					alertMsg=result;
+					$("#alertBoxMain").show();
+					document.getElementById("alertBox").innerHTML=alertMsg;
+					document.getElementById("cmdWindow").innerHTML=query + ';';
+					$("#id01").hide();
+					$("#SUBMIT").click();
+				}
+			});
+		}
+
+	function GetTbList()
+	{
+		var selectobject=document.getElementById("tbDropDown");
+		for (var i = selectobject.length - 1; i >= 1; i--){
+			selectobject.options[i] = null;
+		}
+		var tago="TbList";
+		var dataString = 'tag='+ tago;
+		$.ajax({
+			type: "POST",
+			url: "queryExecutor.php",
+			dataType: 'json',
+			data: dataString,
+			success: function(result){
+				var countItem = Object.keys(result).length;
+
+				for (var i = 0; i < countItem; i++) {
+					$('#tbDropDown')
+						.append(
+
+							'<option value="' + result[i] + '">' + result[i] + '</option>'
+						);
+				}
+			}
+		});
+	}
+    function getNO()
+    {
+      var tago="getNO";
+      var dataString = 'tag='+ tago;
+
+          $.ajax({
+              type: "POST",
+              url: "queryExecutor.php",
+              data: dataString,
+              cache: false,
+              success: function(result){
+
+                  document.getElementById("studentNo").innerHTML=result;
+
+              }
+          });
+    }
+
+
+
+  </script>
+<body onload="GetTbList(); getNO();">
+<!-- side navigation bar start -->
+    <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
+      <br>
+      <br>
+      <div class="w3-container w3-center ">
+        <i class="fa fa-user-circle w3-jumbo "></i>
+        <p id = "studentNo"></p>
+        <hr>
+      </div>
     <a href="index.html"><i class="fa fa-home"></i> HOME</a>
      <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
-      <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
+      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
       </a>
-	 
+
       <div id="ddl" class="w3-accordion-content w3-white">
 	     <!--DDL-CREATE-->
-         <div class="w3-accordion">           
-		 
-          <a onclick="DropdownFunc(dropcreate)" href="#">
-            <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dropcreate" class="w3-accordion-content w3-white"   >
-            <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-          </div>
-  
-		</div>
+         <div class="w3-accordion">
+            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+		     </div>
 		<!--DDL-ALTER-->
 		    <div class="w3-accordion">
-          <a onclick="DropdownFunc(dropalter)" href="alter.html">
-            <i class="fa fa-angle-right"></i> Alter 
-          </a>
+                <a  href="alter.html">
+                    <i class="fa fa-angle-right"></i> Alter Table
+                </a>
+		     </div>
+          <!--DDL-Drop-->
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
+          <!--DDL-Truncate-->
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+       </div>
 
-		</div>
-		<!--DDL-Drop-->
-          <a onclick="DropdownFunc(dropdrop)" href="#">
-            <i class="fa fa-angle-right"></i>Drop<i class="fa fa-caret-down"></i>
-          </a> 
- 		<div id="dropdrop" class="w3-accordion-content w3-white"  >
-            <a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-          </div>
-		<!--DDL-Truncate-->
-        <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
 
-      </div>
-	  
 
-      
-    </div>
-  
-    <div class="w3-accordion">
-      <a onclick="DropdownFunc(dml)" href="#">
-      <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="dml" class="w3-accordion-content ">
-        <a href="#"><i class="fa fa-angle-right"></i> Link 1</a>
-        <a href="#"><i class="fa fa-angle-right"></i> Link 2</a>
-        <a href="#"><i class="fa fa-angle-right"></i> Link 3</a>
-      </div>
-    </div>
-    <div class="w3-accordion">
-      <a onclick="DropdownFunc(view)" href="#">
-      <i class="fa fa-plus-square-o"></i> VIEW <i class="fa fa-caret-down"></i>
-      </a>
-      <div id="view" class="w3-accordion-content w3-white ">
-          <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
-          <a href="#" onclick="DropdownFunc(alter_view)"><i class="fa fa-angle-right"></i> Alter view <i class="fa fa-caret-down"></i> </a>
-          <div id="alter_view" class="w3-accordion-content w3-white">
-          <a href="Drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
-          <a href="Rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
-          </div>
-         
-      </div>
-      
-    </div>
-    <a href="#"><i class="fa fa-globe"></i> HELP</a>
+     </div>
+
+        <div class="w3-accordion">
+            <a onclick="DropdownFunc(dml)" href="#">
+                <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="dml" class="w3-accordion-content w3-white">
+                <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
+                <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
+                <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
+                <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
+            </div>
+        </div>
+
+        <div class="w3-accordion">
+
+            <a onclick="DropdownFunc(alter_view)" href="#">
+                <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
+            </a>
+            <div id="alter_view" class="w3-accordion-content w3-white"   >
+                <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+                <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+                <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
+            </div>
+
+        </div>
+
+        <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+
+        <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+        <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 <!-- side navigation bar end -->
 
 
-  <div class="w3-main" style="margin-left:160px">
+  <div class="w3-main" style="margin-left:190px">
     <!-- Logo and all start -->
     <header class="w3-container w3-light-grey w3-border-bottom">
-      <h3>LOGO</h3>
+		<h3 id="topheader"><img src="images/logo.png" height="40px">
+    <button class="w3-button w3-round-xxlarge  w3-right w3-large" onclick="logout();" >Logout <i class="fa fa-power-off"></i></button></h3>
     </header>
     <!-- Logo and all end -->
 
     <div id="mainWindow">
-	
+
 	<!-- modal-->
 	<div id="id01" class="w3-modal">
-        <div class="w3-modal-content">
-            <div class="w3-container">
-				<span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-				<div id="DSHOW" class="w3-container w3-padding">
-				<input class="w3-hide" id='oldname'>
-				<table class="w3-table">
-					<tr>
-					
-						<td><label>Field</label><input class="w3-input w3-border" id="newname" /></td>
-						<td><label>type</label><input class="w3-input w3-border" id="dtype" /></td>
-					</tr>
-				</table>
-				<p class="w3-right"><button class="w3-btn w3-round-xlarge w3-blue-grey" onclick="modify();">GO</button></p>
-				</div>
+	  <div  class="w3-modal-content">
+		<div class="w3-container">
+		  <span onclick="document.getElementById('id01').style.display='none'" class=" w3-white w3-button w3-display-topright"><i class="fa fa-close" style="font-size:25px;color:red"></i></span>
+		  <div id="DSHOW" class="w3-container">
+			<br>
+			<br>
+			<table id = "updatemodaltable" class = "w3-table-all">
 
-            </div>
-        </div>
-    </div>
+			</table>
+			<br>
+			<p><button class="w3-btn w3-round-xlarge w3-blue-grey w3-right" onclick="updatevalues();">GO</button><p>
+			<br>
+			<br>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
 
       <div class="w3-layout-container">
         <!-- Query view section start-->
@@ -277,63 +359,97 @@
             <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
 
 
-                  <p><i class="	fa fa-angle-double-right"></i> Alter</p>
+                  <p><i class="	fa fa-angle-double-right"></i> Data Updation</p>
                 <!-- Alert Box Section by default its hidden start-->
                 <div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
                   <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
                   <p id="alertBox"></p>
                 </div>
                 <!-- Alert Box Section by default its hidden end-->
-				
+
 				<!-- code for selecting database and displaying table structure  start-->
-				
-				<div class="w3-container w3-border-left w3-border">
+
+                <div class="w3-container w3-border-left w3-border-right w3-border-top ">
                         <p><label class="w3-label w3-text-blue">Select Database & Table <span class="w3-text-red">*</span>:</label>
-
-                                <select id = "dbnameInput" name="DDD"  onclick="GetTbDropdownList(this.value);">
-                                    <option value = 0>Select Database</option>
-                                </select>
-
-
-
+						
                             <!--<span id = "TbnameInput">-->
-                                <select id = "TbnameInput" name="TDD">
-                                    <option value = 0>Select Table</option>
-                                </select>
-                            </span>
-							
+							<select id = "tbDropDown" name="TDD">
+								<option value = 0>Select Table</option>
+							</select></p>
+
                         </p>
+                    <hr>
 						<p class="w3-right">
 							<button id="SUBMIT" class="w3-btn w3-signal-red w3-round-xlarge">SUBMIT</button>
 						</p>
+                    <br>
 
-                </div>	
+                </div>
 				<!-- code for selecting database and retrieving table structure  end-->
-				
-					<div>
-						<table id="tstructure" class="w3-table w3-striped w3-bordered">
-						
-						</table>
-					
-					</div>				
 
-				
+                <div class="w3-container w3-border-left w3-border-right w3-border-bottom ">
+						<table id="tstructureheading" class="w3-table-all ">
+
+						</table>
+						<table id="tstructure" class="w3-table-all ">
+
+						</table>
+                    <br>
+
+					</div>
+
+
 				<br>
 				<br>
-				
-</div>
+
+				</div>
+
             <!-- Action section end -->
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-            
-              <p ><b> ALTER  TABLE: </b> <br>The ALTER TABLE statement is used to add, delete, or modify columns in an existing table.</p>
-            <ul>
-            <li>  <p><b>ALTER TABLE - ADD Column</b><br>To add a column in a table, use the following syntax:<br><span class="w3-text-blue">ALTER TABLE</span> table_name<br><span class="w3-text-blue">ADD</span> column_name datatype;</p></li>
-            <li><p><b>ALTER TABLE - ALTER/MODIFY COLUMN</b><br><span class="w3-text-blue">ALTER TABLE</span> table_name<br><span class="w3-text-blue">CHANGE</span> old_column_name new_column_name new_datatype;</p></li>
-            <li><p><b>ALTER TABLE - RENAME TABLE</b><br><span class="w3-text-blue">ALTER TABLE</span> old_table_name<span class="w3-text-blue"> TO</span> new_table_name;</p></li>
-            <li><p><b>ALTER TABLE - DROP COLUMN</b><br><span class="w3-text-blue">ALTER TABLE</span> table_name <span class="w3-text-blue">DROP COLUMN</span> column_name;</p></li>
-			      </ul>
+                <p>
+                    <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
+                <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)">
+                <div class="w3-tag w3-round w3-green w3-border w3-border-white">
+                    Description :
+                </div>
+            </div></p>
+                <p id ="description">The MySQL UPDATE statement is used to update existing records in a table in a MySQL database.
+                    There are 3 syntaxes for the UPDATE statement depending on the type of update that you wish to perform..</p>
             </div>
+            </p>
+
+            <p>
+                <div class="w3-panel w3-pale-blue w3-border-left w3-border-blue">
+            <p> <div class="w3-tag w3-round w3-blue" style="padding:3px" onclick="showANDhideBox(syntax)">
+            <div class="w3-tag w3-round w3-blue w3-border w3-border-white">
+                Syntax :
+            </div>
+        </div></p>
+            <p id="syntax" style="display:none">
+                UPDATE table
+                SET column1 = expression1,
+                column2 = expression2,
+                ...
+                [WHERE conditions];
+            </p>
+        </div>
+          </p>
+
+          <p>
+              <div class="w3-panel w3-pale-red w3-border-left w3-border-red">
+          <p> <div class="w3-tag w3-round w3-red" style="padding:3px" onclick="showANDhideBox(example)">
+          <div class="w3-tag w3-round w3-red w3-border w3-border-white">
+              Example :
+          </div>
+      </div></p>
+          <p id="example" style="display:none">
+              UPDATE customers
+              SET last_name = 'Anderson'
+              WHERE customer_id = 5000;
+          </p>
+            </div>
+    </div>
             <!-- flow Chart section start end -->
         </div>
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/w3.css">
+	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
+	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+<header class="w3-container w3-center">
+  <h1> <img src="images/logo.png" ></h1>
+</header>
+<br>
+<div class="w3-container w3-card-4 w3-round-large w3-border" style="max-width:500px;margin:0 auto;padding:10px;">
+<center><h2>Forgot Password</h2></center>
+<form action="sendotp.php" method="post">
+			<br>
+	
+			<div class="w3-container w3-padding">
+				<label><b>Roll Number</b></label><br>
+				<input type="text" placeholder="Enter Roll number" name="roll_no" id="roll_no" class="w3-input w3-border" required><br><br>
+				
+				<button class="w3-btn w3-right w3-green w3-round-xlarge "  name="submit" id = "submit"  onclick="validateandload();" >SUBMIT</button>
+				<a href="login.html"> <button type="button" class="w3-btn w3-round-xlarge w3-margin-bottom w3-pale-yellow w3-border" > << Back </button></a>
+			</div>
+</form>
+</div>
+<script>
+function validateandload()
+{
+	var roll_no = $("#roll_no").val()
+	if(roll_no == "")
+	{}else{
+		document.getElementById('id01').style.display='block';
+	}
+}
+</script>
+<!-- The Modal -->
+<div id="id01" class="w3-modal">
+  <div class="w3-container w3-center" style=" margin: 0 auto; width: fit-content; height: fit-content;">
+    
+		<i class="fa fa-refresh fa-spin" style="font-size:50px"></i>
+  </div>
+</div>
+
+</body>
+</html>

@@ -11,7 +11,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 
+    <style>
+      textarea{
 
+        background: url(2cOaJ.png);
+        background-attachment: local;
+        background-repeat: no-repeat;
+        padding-left: 35px;
+        padding-top: 10px;
+        border-color:#ccc;
+      }
+
+    </style>
 
 
   <script>
@@ -24,6 +35,16 @@
               x.previousElementSibling.className =
                   x.previousElementSibling.className.replace("w3-signal-red", "");
           }
+      }
+
+      function showANDhideBox(x){
+
+          if (x.style.display === 'none') {
+              x.style.display = 'block';
+          } else {
+              x.style.display = 'none';
+          }
+
       }
 
       function showFullTable(Tb)
@@ -41,40 +62,36 @@
                   data: dataString,
                   success: function(result){
 
-                      document.getElementById("allShow").innerHTML=result;
+                      document.getElementById('id01').style.display='block'
+                      document.getElementById("selTableShow").innerHTML=result;
 
                   }
               });
 
       }
 
-      function GetDbDropdownList()
+      function logout()
       {
-          var tago="DbDropdownList";
-          var dataString = 'tag='+ tago;
-          $.ajax({
-              type: "POST",
-              url: "queryExecutor.php",
-              dataType: 'json',
-              data: dataString,
-              success: function(result){
-                  var countItem = Object.keys(result).length;
-                  for (var i = 0; i < countItem; i++) {
-                      $('#dbDropDown')
-                          .append(
-
-                              '<option value="' + result[i] + '">' + result[i] + '</option>'
-                          );
-                  }
-              }
-          });
+        var tago = "logout";
+        var dataValues  = 'tag='+tago;
+        $.ajax({
+        type: "POST",
+        url: "queryExecutor.php",
+        data: dataValues,
+        success: function(result){
+          document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+          setInterval(function(){window.location.replace("login.html")},2000);
+        }
+        });
       }
 
-      function GetTbTagList(tdbName)
+
+
+      function GetTbTagList()
       {
           document.getElementById("tbTags").innerHTML="";
-          var tago="TbDropdownList";
-          var dataString = 'tag='+ tago + '&dbName='+ tdbName;
+          var tago="TbList";
+          var dataString = 'tag='+ tago ;
           $.ajax({
               type: "POST",
               url: "queryExecutor.php",
@@ -149,6 +166,25 @@
               document.getElementById("allShow").innerHTML="";
           });
       });
+
+      function getNO()
+      {
+        var tago="getNO";
+        var dataString = 'tag='+ tago;
+
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                cache: false,
+                success: function(result){
+
+                    document.getElementById("studentNo").innerHTML=result;
+
+                }
+            });
+      }
+
   </script>
 
 
@@ -156,59 +192,48 @@
 
 
 </head>
-<body onload="GetDbDropdownList();">
+<body onload="GetTbTagList(); getNO();">
 
 
 <!-- side navigation bar start -->
-  <nav class="w3-sidenav w3-signal-red" style="width:160px;">
-<br>
+  <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
+    <br>
+    <br>
+    <div class="w3-container w3-center ">
+      <i class="fa fa-user-circle w3-jumbo "></i>
+      <p id = "studentNo"></p>
+      <hr>
+    </div>
     <a href="index.html"><i class="fa fa-home"></i> HOME</a>
      <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
-      <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
+      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
       </a>
 
       <div id="ddl" class="w3-accordion-content w3-white">
 	     <!--DDL-CREATE-->
          <div class="w3-accordion">
-
-          <a onclick="DropdownFunc(dropcreate)" href="#">
-            <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dropcreate" class="w3-accordion-content w3-white"   >
-            <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-          </div>
-
-		</div>
+            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+		     </div>
 		<!--DDL-ALTER-->
-
-        <a  href="alter.html">
-          <i class="fa fa-angle-right"></i> Alter
-        </a>
-
-		<!--DDL-Drop-->
-		<a onclick="DropdownFunc(dropdrop)" href="#">
-			<i class="fa fa-angle-right"></i> Drop <i class="fa fa-caret-down"></i>
-		</a>
-		<div id="dropdrop" class="w3-accordion-content w3-white"  >
-			<a href="drop_database.html"><i class="fa fa-toggle-right"></i> Database</a>
-			<a href="drop_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-		</div>
-		<!--DDL-Truncate-->
-        <a href="trucate.html"><i class="fa fa-angle-right"></i> Truncate</a>
+		    <div class="w3-accordion">
+                <a  href="alter.html">
+                    <i class="fa fa-angle-right"></i> Alter Table
+                </a>
+		     </div>
+          <!--DDL-Drop-->
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
+          <!--DDL-Truncate-->
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+       </div>
 
 
 
+     </div>
 
-      </div>
-
-
-
-    </div>
     <div class="w3-accordion">
       <a onclick="DropdownFunc(dml)" href="#">
-      <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
+        <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
       </a>
       <div id="dml" class="w3-accordion-content w3-white">
         <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
@@ -217,30 +242,33 @@
         <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
       </div>
     </div>
+
     <div class="w3-accordion">
-      <a onclick="DropdownFunc(view)" href="#">
-      <i class="fa fa-plus-square-o"></i> VIEW <i class="fa fa-caret-down"></i>
+
+      <a onclick="DropdownFunc(alter_view)" href="#">
+        <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
       </a>
-      <div id="view" class="w3-accordion-content w3-white ">
-          <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
-          <a href="#" onclick="DropdownFunc(alter_view)"><i class="fa fa-angle-right"></i> Alter view <i class="fa fa-caret-down"></i> </a>
-          <div id="alter_view" class="w3-accordion-content w3-white">
-          <a href="Drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
-          <a href="Rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
-          </div>
-         
+      <div id="alter_view" class="w3-accordion-content w3-white"   >
+        <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
+        <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
+        <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
       </div>
-      
+
     </div>
+
+    <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+
+    <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 <!-- side navigation bar end -->
 
 
-  <div class="w3-main" style="margin-left:160px">
+  <div class="w3-main" style="margin-left:190px">
     <!-- Logo and all start -->
     <header class="w3-container w3-light-grey w3-border-bottom">
-      <h3>LOGO</h3>
+		<h3 id="topheader"><img src="images/logo.png" height="40px">
+      <button class="w3-button w3-round-xxlarge  w3-right w3-large" onclick="logout();" >Logout <i class="fa fa-power-off"></i></button></h3>
     </header>
     <!-- Logo and all end -->
 
@@ -268,23 +296,19 @@
                 </div>
                 <!-- Alert Box Section by default its hidden end-->
               <div class="w3-container w3-border-left w3-border-right w3-border-top ">
-                <p><label class="w3-label w3-text-blue">Select Database<span class="w3-text-red">*</span>:</label>
-
-                  <select id = "dbDropDown" name="DDD" onchange="GetTbTagList(this.value)">
-                    <option value = 0>Select Database</option>
-                  </select>
+                <p>
                 <span>&nbsp&nbsp<label class="w3-label w3-text-blue">Table Names :&nbsp</label></span>
                   <span id = "tbTags">
 
-                            </span>
+                  </span>
                 </p>
 
 
               </div>
 
-                  <textarea class="w3-light-grey" id ="sqlcmdarea" name="message" rows="7" cols="105"></textarea>
+                  <textarea class="w3-light-grey" id ="sqlcmdarea" name="message" rows="7" cols="105" autofocus></textarea>
                   <br>
-                <div class="w3-container w3-border">
+                <div class="w3-container w3-border-left w3-border-right ">
                   <p>
                     <div id="SELECT" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       SELECT
@@ -374,24 +398,61 @@
                   </p>
 
                 </div>
-                <div class="w3-container w3-border-left w3-border-right w3-center">
+                <div class="w3-container w3-border-left w3-border-bottom w3-border-right w3-center">
                 <p><button id = "clear" class="w3-btn w3-round-xlarge w3-signal-red">CLEAR</button>
                 <button id = "run" class="w3-btn w3-round-xlarge w3-signal-red">RUN</button></p></div>
 
-              <div class="w3-container w3-border-bottom w3-border-left w3-border-right  ">
 
-                <table id ="allShow" class = "w3-table-all">
-
-              </table>
-              <br>
-              </div>
               <br>
               </div>
             <!-- Action section end -->
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-              <p>chart</p>
+              <p>
+                <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
+              <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)">
+              <div class="w3-tag w3-round w3-green w3-border w3-border-white">
+                Description :
+              </div>
+            </div></p>
+              <p id ="description">The MySQL SELECT statement is used to retrieve records from one or more tables in MySQL.</p>
             </div>
+          </p>
+
+          <p>
+            <div class="w3-panel w3-pale-blue w3-border-left w3-border-blue">
+          <p> <div class="w3-tag w3-round w3-blue" style="padding:3px" onclick="showANDhideBox(syntax)">
+          <div class="w3-tag w3-round w3-blue w3-border w3-border-white">
+            Syntax :
+          </div>
+        </div></p>
+          <p id="syntax" >SELECT expressions
+            FROM tables
+            [WHERE conditions];</p>
+        </div>
+        </p>
+
+        <p>
+          <div class="w3-panel w3-pale-red w3-border-left w3-border-red">
+        <p> <div class="w3-tag w3-round w3-red" style="padding:3px" onclick="showANDhideBox(example)">
+        <div class="w3-tag w3-round w3-red w3-border w3-border-white">
+          Example :
+        </div>
+      </div></p>
+        <p id="example" >
+         1) SELECT *
+          FROM order_details
+          WHERE quantity >= 10
+          ORDER BY quantity DESC;
+          <br><br>
+          2) SELECT order_details.order_id, customers.customer_name
+          FROM customers
+          INNER JOIN order_details
+          ON customers.customer_id = order_details.customer_id
+          ORDER BY order_id;
+        </p>
+            </div>
+    </div>
             <!-- flow Chart section start end -->
         </div>
 
@@ -399,13 +460,8 @@
           <div class="w3-modal-content">
             <div class="w3-container">
               <span onclick="document.getElementById('id01').style.display='none'" class=" w3-white w3-button w3-display-topright"><i class="fa fa-close" style="font-size:25px;color:red"></i></span>
-              <div id="DSHOW" class="w3-container">
-                <br>
-                <br>
-                <table id = "selTableShow" class = "w3-table-all">
+              <div id="selTableShow" class="w3-container" style =" overflow: scroll; overflow-y: hidden;">
 
-                </table>
-                <br>
               </div>
 
             </div>

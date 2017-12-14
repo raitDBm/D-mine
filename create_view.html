@@ -7,15 +7,25 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
+    <style>
+        textarea{
+
+            background: url(2cOaJ.png);
+            background-attachment: local;
+            background-repeat: no-repeat;
+            padding-left: 35px;
+            padding-top: 10px;
+            border-color:#ccc;
+        }
+
+    </style>
+
+
+
     <script>
-
-        var cItem;
-        var rNum;
-        var finalInsertQuery = "";
-
-        var columnInsert;
         function DropdownFunc(x) {
             if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
@@ -27,7 +37,6 @@
             }
         }
 
-
         function showANDhideBox(x){
 
             if (x.style.display === 'none') {
@@ -38,30 +47,35 @@
 
         }
 
-
-        function logout()
+        function showFullTable(Tb)
         {
-          var tago = "logout";
-          var dataValues  = 'tag='+tago;
-          $.ajax({
-          type: "POST",
-          url: "queryExecutor.php",
-          data: dataValues,
-          success: function(result){
-            document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
-            setInterval(function(){window.location.replace("login.html")},2000);
-          }
-          });
+
+
+            var SelCmd = 'select * from '+Tb;
+            var tago="SelectExecution";
+            var dataString = 'tag='+ tago + '&SelCmd='+ SelCmd ;
+
+
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+
+                    document.getElementById("allShow").innerHTML=result;
+
+                }
+            });
+
         }
 
-        function GetTbList()
+
+
+        function GetTbTagList()
         {
-            var selectobject=document.getElementById("tbDropDown");
-            for (var i = selectobject.length - 1; i >= 1; i--){
-                selectobject.options[i] = null;
-            }
+            document.getElementById("tbTags").innerHTML="";
             var tago="TbList";
-            var dataString = 'tag='+ tago;
+            var dataString = 'tag='+ tago ;
             $.ajax({
                 type: "POST",
                 url: "queryExecutor.php",
@@ -71,156 +85,46 @@
                     var countItem = Object.keys(result).length;
 
                     for (var i = 0; i < countItem; i++) {
-                        $('#tbDropDown')
+                        $('#tbTags')
                             .append(
 
-                                '<option value="' + result[i] + '">' + result[i] + '</option>'
+                                '<div id="'+ result[i] +'" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="showFullTable(this.id)">'
+                                + result[i] +
+                                '</div>&nbsp'
+
+
                             );
                     }
+
                 }
             });
         }
 
-        function GenerateTbViewForInsertion(rowNo)
-        {
-            document.getElementById("viewTable").innerHTML = "";
-            $("#viewTable").append(
-
-                '<tr>'+
-                '<th>Column Name</th>'+
-                '<th>Values</th>'+
-                '</tr>'
-            );
-            rNum = rowNo;
-            var tago ="descTbInsertion";
-
-            var tbName = $('#tbDropDown').val();
-            var dataString = 'tag='+ tago  + '&tbName='+tbName;
-
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                dataType: 'json',
-                data: dataString,
-                success: function(result){
-                    cItem = Object.keys(result).length;
-
-                    columnInsert = '(';
-                    for(var k =0; k < cItem; k++ )
-                    {
-
-                            if(k==0)
-                                columnInsert += result[k];
-                            else
-                                columnInsert += ','+result[k];
-
-                    }
-                    columnInsert += ')';
-                    var p = 0;
-                    for(var j=1; j < rowNo; j++) {
-                        for (var i = 0; i < cItem; i++) {
-
-                            $('#viewTable')
-                                .append(
-                                    '<tr>' +
-                                    '<td>' + result[i] + '</td>' +
-                                    '<td><input id="iB' + p + '" type="text" class="input" required /></td>' +
-                                    '</tr>'
-                                );
-                            p++;
-                        }
-
-                    }
-                }
-            });
 
 
-        }
-
-        function queryGenerateAndSend()
-        {
-
-            var valueGen = "";
-            var z=0;
-            for(var j=1; j < rNum; j++) {
-
-                if(j==1) {
-
-                    valueGen += "(";
-                    for (var i = 0; i < cItem; i++) {
-
-                        if (i == 0) {
-                            var temp = "" + $('#iB' + z++).val();
-                            valueGen += "'" + temp + "'";
-                        } else {
-                            temp = "" + $('#iB' + z++).val();
-                            valueGen += ",'" + temp + "'";
-                        }
-                    }
-                    valueGen += ")";
-                }
-                else{
-                    valueGen += ",(";
-                    for (var i = 0; i < cItem; i++) {
-
-                        if (i == 0) {
-                            var temp = "" + $('#iB' + z++).val();
-                            valueGen += "'" + temp + "'";
-                        } else {
-                            temp = "" + $('#iB' + z++).val();
-                            valueGen += ",'" + temp + "'";
-                        }
-                    }
-                    valueGen += ")";
-                }
-
-            }
-
-
-
-
-            var tago ="insertionDB";
-
-            var tbName = $('#tbDropDown').val();
-            finalInsertQuery = 'INSERT INTO ' + tbName + ' ' + columnInsert + ' VALUES ' + valueGen + ';';
-            var dataString = 'tag='+ tago + '&tbName='+tbName+ '&queryInsert='+finalInsertQuery ;
-
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                data: dataString,
-                success: function(result){
-
-                    $("#alertBoxMain").show();
-                    document.getElementById("alertBox").innerHTML= result;
-                    document.getElementById("cmdWindow").innerHTML= finalInsertQuery;
-
-
-                }
-            });
-
-
-
-
-        }
-
-        //when reset button is clicked this logic reset input field and alertmsg
+        //when create button is clicked this logic send data and recieve result from queryExecutor
         $(document).ready(function(){
-            $("#RESET").click(function(){
+            $("#run").click(function(){
+                var dbName = $('#dbDropDown').val();
+                var alertMsg="";
 
-                document.getElementById("viewTable").innerHTML = "";
-                var cmd = "<span class='w3-text-red'>NOTE: First select the Database and Table you want to alter and then proceed </span>";
-                document.getElementById("alertBox").innerHTML="";
-                $("#alertBoxMain").hide();
-                document.getElementById("cmdWindow").innerHTML=cmd;
-                $("#viewTable").append(
+                var ViewCmd = 'CREATE VIEW ' + $("#viewNameInput").val() + ' AS ' + $("#sqlcmdarea").val() +';';
+                var tago="CreateViewExecution";
+                var dataString = 'tag='+ tago + '&ViewCmd='+ ViewCmd ;
 
-                '<tr>'+
-                '<th>Column Name</th>'+
-                '<th>Values</th>'+
-                '</tr>'
-                );
 
+                    $.ajax({
+                        type: "POST",
+                        url: "queryExecutor.php",
+                        data: dataString,
+                        success: function(result){
+                            alertMsg=result;
+                            var cmd = ViewCmd;
+                            $("#alertBoxMain").show();
+                            document.getElementById("alertBox").innerHTML=alertMsg;
+                            document.getElementById("cmdWindow").innerHTML=cmd;
+                        }
+                    });
 
             });
         });
@@ -242,11 +146,30 @@
                   }
               });
         }
+
+        function logout()
+        {
+          var tago = "logout";
+          var dataValues  = 'tag='+tago;
+          $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataValues,
+          success: function(result){
+            document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+            setInterval(function(){window.location.replace("login.html")},2000);
+          }
+          });
+        }
+
     </script>
 
 
+
+
+
 </head>
-<body onload="GetTbList(); getNO();">
+<body onload="GetTbTagList(); getNO();">
 
 
 <!-- side navigation bar start -->
@@ -331,7 +254,7 @@
             <!-- Query view section start-->
             <div class="w3-layout-container">
                 <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey" style="width:100%; height: 50px;">
-                    <p id="cmdWindow"><span class="w3-text-red">NOTE: First select the Database and Table you want to alter and then proceed </span> </p>
+                    <p id="cmdWindow">CREATE OR REPLACE VIEW  </p>
                 </div>
             </div>
             <!-- Query view section end -->
@@ -342,47 +265,41 @@
                 <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
 
 
-                    <p><i class="	fa fa-angle-double-right"></i> Data Insertion Engine</p>
+                    <br>
                     <!-- Alert Box Section by default its hidden start-->
                     <div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
                         <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
                         <p id="alertBox"></p>
                     </div>
                     <!-- Alert Box Section by default its hidden end-->
-
                     <div class="w3-container w3-border-left w3-border-right w3-border-top ">
-                      <div><p><label class="w3-label w3-text-blue">Select Table<span class="w3-text-red">*</span>:</label>
+                        <p>
+                            <span><label class="w3-label w3-text-blue">Table Names :&nbsp</label></span>
+                            <span id = "tbTags">
 
+                            </span>
+                        </p>
 
-                                  <select id = "tbDropDown" name="TDD">
-                                      <option value = 0>Select Table</option>
-                                  </select></p>
-
-                      </div>
-
+                        <p><label class="w3-label w3-text-blue">Create or Replace View <span class="w3-text-red">*</span>:</label>
+                            <input id="viewNameInput" class="w3-input w3-border-bottom" type="text"></p>
+                        <p><label class="w3-label w3-text-blue">AS :</label></p>
 
                     </div>
-                <hr>
-                    <div class="w3-container w3-border-left w3-border-right w3-border-bottom">
-                        <p>Insertion with &nbsp
-                            <select id = "rowNo" name="RDD" onchange="GenerateTbViewForInsertion(this.value)">
-                             <option value = 0> Select No Of  </option>
-                            <option value = 2> 1 </option>
-                            <option value = 3> 2 </option>
-                            <option value = 6> 5 </option>
-                            <option value = 11> 10 </option>
-                            </select> &nbsprows.</p>
-                        <div id = "viewTableDiv">
-                            <table id ="viewTable" class="w3-table-all">
 
 
-                            </table>
-                        </div>
+                    <textarea class="w3-light-grey" id ="sqlcmdarea" name="message" rows="7" cols="105"></textarea>
+                    <br>
+
+                    <div class="w3-container w3-border-left w3-border-right w3-center">
+                        <p>
+                            <button id = "run" class="w3-btn w3-round-xlarge w3-signal-red">Create View</button></p></div>
+
+                    <div class="w3-container w3-border-bottom w3-border-left w3-border-right  ">
+
+                        <table id ="allShow" class = "w3-table-all">
+
+                        </table>
                         <br>
-
-                        <p class="w3-right"><button onclick = "queryGenerateAndSend()" class="w3-btn w3-signal-red w3-round-xlarge">CREATE</button>
-                            <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge">RESET</button></p>
-
                     </div>
                     <br>
                 </div>
@@ -396,7 +313,8 @@
                         Description :
                     </div>
                 </div></p>
-                    <p id ="description">The MySQL INSERT statement is used to insert a single record or multiple records into a table in MySQL.</p>
+                    <p id ="description">In MySQL, a VIEW is not a physical table, but rather,
+                        it is in essence a virtual table created by a query joining one or more tables.</p>
                 </div>
                 </p>
 
@@ -408,12 +326,10 @@
                 </div>
             </div></p>
                 <p id="syntax" >
-                    INSERT INTO table
-                    (column1, column2, ... )
-                    VALUES
-                    (expression1, expression2, ... ),
-                    (expression1, expression2, ... ),
-                    ...;
+                    CREATE [OR REPLACE] VIEW view_name AS
+                    SELECT columns
+                    FROM tables
+                    [WHERE conditions];
                 </p>
             </div>
             </p>
@@ -424,18 +340,19 @@
             <div class="w3-tag w3-round w3-red w3-border w3-border-white">
                 Example :
             </div>
-        </div>
-            </p>
+        </div></p>
             <p id="example" >
-                INSERT INTO suppliers
-                (supplier_id, supplier_name)
-                VALUES
-                (1000, 'Dell');
+                CREATE VIEW hardware_suppliers AS
+                SELECT supplier_id, supplier_name
+                FROM suppliers
+                WHERE category_type = 'Hardware';
             </p>
                 </div>
-            </div>
+                </div>
                 <!-- flow Chart section start end -->
             </div>
+
+
 
             <footer class="w3-container w3-light-grey w3-border-top">
                 <p class=" w3-right">Copyright © 2017 All rights reserved</p>

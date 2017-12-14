@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
-<body onload="GetDbDropdownList();">
+
 <style>
 /* The Modal (background) */
 .modal {
@@ -48,7 +48,6 @@
     text-decoration: none;
     cursor: pointer;
 }
-
 </style>
 
   <script>
@@ -84,10 +83,16 @@
                 x.previousElementSibling.className.replace(" w3-light-grey", "");
             }
         }
-		
-		function GetDbDropdownList()
+
+
+
+        function GetTbList()
         {
-            var tago="DbDropdownList";
+            var selectobject=document.getElementById("tbDropDown");
+            for (var i = selectobject.length - 1; i >= 1; i--){
+                selectobject.options[i] = null;
+            }
+            var tago="TbList";
             var dataString = 'tag='+ tago;
             $.ajax({
                 type: "POST",
@@ -96,8 +101,9 @@
                 data: dataString,
                 success: function(result){
                     var countItem = Object.keys(result).length;
+
                     for (var i = 0; i < countItem; i++) {
-                        $('#dbnameInput')
+                        $('#tbDropDown')
                             .append(
 
                                 '<option value="' + result[i] + '">' + result[i] + '</option>'
@@ -107,203 +113,16 @@
             });
         }
 
-        function GetTbDropdownList(tdbName)
-        {
-            var selectobject=document.getElementById("TbnameInput");
-            for (var i = selectobject.length - 1; i >= 1; i--){
-                    selectobject.options[i] = null;
-            }
-            var tago="TbDropdownList";
-            var dataString = 'tag='+ tago + '&dbName='+ tdbName;
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                dataType: 'json',
-                data: dataString,
-                success: function(result){
-                    var countItem = Object.keys(result).length;
-
-                    for (var i = 0; i < countItem; i++) {
-                        $('#TbnameInput')
-                            .append(
-
-                                '<option value="' + result[i] + '">' + result[i] + '</option>'
-                            );
-                    }
-                }
-            });
-        }
-        function GetColumn()
-        {
-          database_name=$("#dbnameInput").val();
-          table_name=$("#TbnameInput").val();
-          
-          var query = "";
-          var tago = "getColumns";
-          var dataString = 'tag='+ tago +'&dbName='+ database_name + '&Query='+query+ '&tbName='+table_name;
-
-        $.ajax({
-          type: "POST",
-          url: "queryExecutor.php",
-          data: dataString,
-          success: function(result){
-              /*var Count_num=Object.keys(result).length;
-              for(var i=0;i<Count_num;i++)
-              {
-                  $('#Table_Columns')
-                  .append(
-                    '<option value="' +result[i]+ '">'+ result[i] + '</option>'
-                    );
-              }*/
-              alertMsg=result;
-              $("#Table_Columns").html(result);
-            }
-        
-        });
-
-        }
-        function Add_Indexes()
-        {
-
-            var tago="alter_index";
-            var database_name=$("#dbnameInput").val();
-            var cons_name=$("#Constraint_name").val();
-            var col_name=$("#Table_Columns").val();
-            var table_name=$("#TbnameInput").val();
-            
-            //alert(table_name);
-            if(cons_name == 'P_K')
-            {
-                var query="ALTER TABLE "+table_name+" ADD PRIMARY KEY ("+col_name+");";
-            }
-            else if(cons_name == 'U_K')
-            {
-                var query="ALTER TABLE "+table_name+" ADD UNIQUE KEY ("+col_name+");";
-            }
-            else
-            {
-                var ref_table_name=$("#ref_TbnameInput").val();
-                var ref_column_name=$("#reference_column_list").val();
-                var query="alter table "+table_name+" add foreign key("+col_name+") references "+ref_table_name+"("+ref_column_name+");";
-            }
-                       
-            var dataString='tag='+tago+'&Query='+query+'&dbName='+database_name;
-            $.ajax({
-              type:"POST",
-              url:"queryExecutor.php",
-              data:dataString,
-              success:function(result){
-                  alertMsg=result;
-                  $("#alertBoxMain").show();
-                  $("#alertBox").html(result);
-                  // document.getElementById("alertBox").innerHTML=alertMsg;
-              }            
-            });
-
-        }
-        function Drop_Indexes()
-        {
-
-            var tago="drop_index";
-            var database_name=$("#dbnameInput").val();
-            var cons_name=$("#Constraint_name").val();
-            var col_name=$("#Table_Columns").val();
-            var table_name=$("#TbnameInput").val();
-            //alert(table_name);
-            if(cons_name == 'P_K')
-            {
-                var query="ALTER TABLE "+table_name+" DROP PRIMARY KEY;";
-            }
-            else if(cons_name == 'U_K')
-            {
-                var query="ALTER TABLE "+table_name+" DROP INDEX "+col_name;
-            }
-            else
-            {
-                var query="dd";
-            }
-            
-            var dataString='tag='+tago+'&Query='+query+'&dbName='+database_name;
-            $.ajax({
-              type:"POST",
-              url:"queryExecutor.php",
-              data:dataString,
-              success:function(result){
-                  alertMsg=result;
-                  $("#alertBoxMain").show();
-                  $("#alertBox").html(result);
-                  // document.getElementById("alertBox").innerHTML=alertMsg;
-              }            
-            });
-
-        }
-        function reference_table()
-        {
-            var tdbName=$("#dbnameInput").val();
-            var selectobject=document.getElementById("ref_TbnameInput");
-            for (var i = selectobject.length - 1; i >= 1; i--){
-                    selectobject.options[i] = null;
-            }
-            var tago="TbDropdownList";
-            var dataString = 'tag='+ tago + '&dbName='+ tdbName;
-            $.ajax({
-                type: "POST",
-                url: "queryExecutor.php",
-                dataType: 'json',
-                data: dataString,
-                success: function(result){
-                    var countItem = Object.keys(result).length;
-
-                    for (var i = 0; i < countItem; i++) {
-                        $('#ref_TbnameInput')
-                            .append(
-
-                                '<option value="' + result[i] + '">' + result[i] + '</option>'
-                            );
-                    }
-                }
-            });
-        }
-        function reference_column()
-        {
-            database_name=$("#dbnameInput").val();
-          table_name=$("#ref_TbnameInput").val();
-          
-          var query = "";
-          var tago = "getColumns";
-          var dataString = 'tag='+ tago +'&dbName='+ database_name + '&Query='+query+ '&tbName='+table_name;
-
-        $.ajax({
-          type: "POST",
-          url: "queryExecutor.php",
-          data: dataString,
-          success: function(result){
-              /*var Count_num=Object.keys(result).length;
-              for(var i=0;i<Count_num;i++)
-              {
-                  $('#Table_Columns')
-                  .append(
-                    '<option value="' +result[i]+ '">'+ result[i] + '</option>'
-                    );
-              }*/
-              alertMsg=result;
-              $("#reference_column_list").html(result);
-            }
-        
-        });
-        }
-
-	
 	$(document).ready(function(){
-			
+
           $("#SUBMIT").click(function(){
             var alertMsg="";
-            dbname = $("#dbnameInput").val();
-            tname = $("#TbnameInput").val();
+
+            tname = $("#tbDropDown").val();
 			var query = "DESCRIBE "+tname+";";
 			var tago="desc";
-            var dataString = 'tag='+ tago + '&Query='+ query+'&dbName='+ dbname + '&tName='+ tname;
-            if(dbname=='' || tname=='')
+            var dataString = 'tag='+ tago + '&Query=' + query + '&tName='+ tname;
+            if(tname==0)
             {
                 alertMsg="Please Fill All Field";
                 $("#alertBoxMain").show();
@@ -324,21 +143,49 @@
             }
         });
       });
-	  
-	  
+
+
 		function ColGenerator()
         {
 			var divClone = $("#AC").clone();
-			$("#addtable").hide();
+//			$("#addtable").hide();
             $("#autoCOL").show();
             var i;
             var rNo = parseInt($("#NoOfColInput").val());
             for (i = 0; i < rNo; i++) {
               $('#autoCOL')
                .append('<tr><td><input id="name' + i + '" type="text" class="input" /></td>' +
-                   '<td><input id="type' + i + '" type="text" class="input" /></td>' +
-                   '<td><input id="length' + i + '" type="text" class="input" /></td>' +
-                   '</tr>');
+
+                      '<td>'
+                      +
+                          '<select id="type' + i + '" >' +
+                        '<optgroup label="Numeric">'+
+                        '<option value="int"> INT </option>' +
+                       '<option value="float"> FLOAT </option>' +
+                       '<option value="double"> DOUBLE </option>' +
+                       '</optgroup>'+
+                       '<optgroup label="Date and time">'+
+                       '<option value="date"> DATE </option>' +
+                      '<option value="time"> TIME </option>' +
+                      '<option value="year"> YEAR </option>' +
+                       '</optgroup>'+
+                     '<optgroup label="String">'+
+                      '<option value="varchar"> VARCHAR </option>' +                     
+                      '<option value="char"> CHAR </option>' +
+                        '<option value="text"> TEXT </option>' +
+                      
+                       '</optgroup>'+
+                       
+                       
+                      '<select>'
+                      +
+                      '</td>'+
+
+                      '<td><input id="length' + i + '" type="text" class="input" /></td>' +
+                      '<td><input  class="w3-check" id=" primary key" type="checkbox"  /><label> PRIMARY KEY  &nbsp&nbsp </label>' +
+                      '<input  class="w3-check" id=" AUTO_INCREMENT" type="checkbox"  /><label> AUTO INCREMENT  &nbsp&nbsp </label>' +
+                      '<input  class="w3-check" id=" NOT NULL" type="checkbox"  /><label> NOT NULL</label></td>' +
+                      '</tr>');
             }
             $("#addcolpara").show();
 
@@ -355,8 +202,8 @@
                   }
                   var query = "ALTER TABLE "+ tname +" ADD " + values + ";";
 				  var tb_tag = "addColumn";
-                  var dataValues = 'tag='+ tb_tag + '&Query='+ query + '&dbName='+ dbname;
-                  
+                  var dataValues = 'tag='+ tb_tag + '&Query='+ query;
+
                   $.ajax({
                   type: "POST",
                   url: "queryExecutor.php",
@@ -365,11 +212,11 @@
                       alertMsg=result;
                       $("#alertBoxMain").show();
 						$("#AC").replaceWith(divClone.clone());
-						
+
                       document.getElementById("alertBox").innerHTML=alertMsg;
                       document.getElementById("cmdWindow").innerHTML=query;
                       $("#SUBMIT").click();
-                      
+
 					}
                   });
 
@@ -383,7 +230,7 @@
         	var dtype = $("#dtype").val();
         	var query = "ALTER TABLE "+ tname +" Change " + oldname + "  "+newname+" "+dtype+";";
         	var tb_tag = "modifyColumn";
-			var dataValues = 'tag='+ tb_tag + '&Query='+ query + '&dbName='+ dbname;
+			var dataValues = 'tag='+ tb_tag + '&Query='+ query;
 			if (oldname=="" || newname=="" || dtype=="")
 			{
                 alertMsg="Please Fill All Field";
@@ -411,9 +258,10 @@
 
         function RenameTable(){
         	var newname = $("#ntname").val();
+			newname = newname.trim();
         	var query ="RENAME TABLE "+tname+" TO "+ newname+";";
         	var tb_tag="renameTable";
-        	var dataValues = "tag="+tb_tag+"&Query="+query+"&dbName=" + dbname;
+        	var dataValues = "tag="+tb_tag+"&Query="+query;
         	if(ntname=="")
         	{
         		alertMsg="Please Fill All Field";
@@ -433,23 +281,22 @@
         				document.getElementById("alertBox").innerHTML=alertMsg;
 
         				document.getElementById("cmdWindow").innerHTML=query;
-        				
-						$("#dbnameInput").click();
-						
-						setInterval(function(){ document.getElementById('TbnameInput').value=newname; tname=newname;}, 1000);
-						
+
+						GetTbList();
+						setTimeout(function(){document.getElementById('tbDropDown').value=newname; tname=newname;}, 1000);
+
         			}
-        		});
+        		})
         	}
         }
 
         function remove(colname){
         	var cname = colname;
 
-        	
+
         		var query= "ALTER TABLE "+tname+" DROP COLUMN "+ cname;
         		var tb_tag = "dropColumn"
-        		var dataValues = "tag="+tb_tag+"&Query="+query+"&dbName="+dbname;
+        		var dataValues = "tag="+tb_tag+"&Query="+query;
         		$.ajax({
         			type: "POST",
         			url: "queryExecutor.php",
@@ -461,69 +308,94 @@
         				document.getElementById("alertBox").innerHTML=alertMsg;
 
         				document.getElementById("cmdWindow").innerHTML=query;
-						
+
         				$("#SUBMIT").click();
         			}
-        		});
-        	
+        		})
+
         }
-		
+
 		function alter(field,type)
 		{
 			document.getElementById('id01').style.display='block';
 			document.getElementById('newname').value=field;
 			document.getElementById('dtype').value=type;
 			document.getElementById('oldname').value=field;
-			
+
 		}
-		
-		
+
+    function getNO()
+    {
+      var tago="getNO";
+      var dataString = 'tag='+ tago;
+
+          $.ajax({
+              type: "POST",
+              url: "queryExecutor.php",
+              data: dataString,
+
+              success: function(result){
+
+                  document.getElementById("studentNo").innerHTML=result;
+
+              }
+          });
+    }
+
+    function logout()
+    {
+      var tago = "logout";
+      var dataValues  = 'tag='+tago;
+      $.ajax({
+      type: "POST",
+      url: "queryExecutor.php",
+      data: dataValues,
+      success: function(result){
+        document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+        setTimeout(function(){window.location.replace("login.html")},2000);
+      }
+      });
+    }
+
 
   </script>
-
-<!-- side navigation bar start -->  
-    <nav class="w3-sidenav w3-signal-red" style="width:160px;">
-	<br>
+<body onload="GetTbList(); getNO();">
+<!-- side navigation bar start -->
+    <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
+      <br>
+      <br>
+      <div class="w3-container w3-center ">
+        <i class="fa fa-user-circle w3-jumbo "></i>
+        <p id = "studentNo"></p>
+        <hr>
+      </div>
     <a href="index.html"><i class="fa fa-home"></i> HOME</a>
      <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
-      <i class="fa fa-plus-square-o"></i> DDL <i class="fa fa-caret-down"></i>
+      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
       </a>
-	 
+
       <div id="ddl" class="w3-accordion-content w3-white">
 	     <!--DDL-CREATE-->
-         <div class="w3-accordion">           
-		 
-          <a onclick="DropdownFunc(dropcreate)" href="#">
-            <i class="fa fa-angle-right"></i> Create <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dropcreate" class="w3-accordion-content w3-white"   >
-            <a href="create_DB.html"><i class="fa fa-toggle-right"></i> Database</a>
-            <a href="create_table.html"><i class="fa fa-toggle-right"></i> Table</a>
-          </div>
-  
-		</div>
+         <div class="w3-accordion">
+            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
+		     </div>
 		<!--DDL-ALTER-->
 		    <div class="w3-accordion">
                 <a  href="alter.html">
-                    <i class="fa fa-angle-right"></i> Alter
+                    <i class="fa fa-angle-right"></i> Alter Table
                 </a>
-
-		</div>
+		     </div>
           <!--DDL-Drop-->
-          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop</a>
+          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
           <!--DDL-Truncate-->
-          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate</a>
-
-      </div>
-
-
-
+          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
+       </div>
      </div>
 
         <div class="w3-accordion">
             <a onclick="DropdownFunc(dml)" href="#">
-                <i class="fa fa-plus-square-o"></i> DML <i class="fa fa-caret-down"></i>
+                <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
             </a>
             <div id="dml" class="w3-accordion-content w3-white">
                 <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
@@ -545,20 +417,24 @@
             </div>
 
         </div>
-    <a href="#"><i class="fa fa-globe"></i> HELP</a>
+        <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
+
+        <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+        <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
 <!-- side navigation bar end -->
 
 
-  <div class="w3-main" style="margin-left:160px">
+  <div class="w3-main" style="margin-left:190px">
     <!-- Logo and all start -->
     <header class="w3-container w3-light-grey w3-border-bottom">
-      <h3>LOGO</h3>
+		<h3 id="topheader"><img src="images/logo.png" height="40px">
+      <button class="w3-button w3-round-xxlarge  w3-right w3-large" onclick="logout();" >Logout <i class="fa fa-power-off"></i></button></h3>
     </header>
     <!-- Logo and all end -->
 
     <div id="mainWindow">
-	
+
 	<!-- modal-->
 	<div id="id01" class="w3-modal">
         <div class="w3-modal-content">
@@ -568,7 +444,7 @@
 				<input class="w3-hide" id='oldname'>
 				<table class="w3-table">
 					<tr>
-					
+
 						<td><label>Field</label><input class="w3-input w3-border" id="newname" /></td>
 						<td><label>type</label><input class="w3-input w3-border" id="dtype" /></td>
 					</tr>
@@ -602,25 +478,19 @@
                   <p id="alertBox"></p>
                 </div>
                 <!-- Alert Box Section by default its hidden end-->
-				
+
 				<!-- code for selecting database and displaying table structure  start-->
-				
+
 				<div class="w3-container w3-border-left w3-border-right w3-border-top ">
-                        <p><label class="w3-label w3-text-blue">Select Database & Table <span class="w3-text-red">*</span>:</label>
-
-                                <select id = "dbnameInput" name="DDD"  onclick="GetTbDropdownList(this.value);">
-                                    <option value = 0>Select Database</option>
-                                </select>
+                        <div><p><label class="w3-label w3-text-blue">Select Table<span class="w3-text-red">*</span>:</label>
 
 
+                                    <select id = "tbDropDown" name="TDD">
+                                        <option value = 0>Select Table</option>
+                                    </select></p>
 
-                            <!--<span id = "TbnameInput">-->
-                                <select id = "TbnameInput" name="TDD">
-                                    <option value = 0>Select Table</option>
-                                </select>
-                            </span>
-							
-                        </p>
+                        </div>
+
 						<p class="w3-right">
 							<button id="SUBMIT" class="w3-btn w3-signal-red w3-round-xlarge">SUBMIT</button>
 						</p>
@@ -628,20 +498,20 @@
                 </div>
                 <hr>
 				<!-- code for selecting database and retrieving table structure  end-->
-				
+
 
 				<!-- code to alter table  start-->
 				<div class="w3-container w3-border-left w3-border-right w3-border-bottom " id="altercmds" style="display:none">
-				
+
 				<!-- display table structure start -->
 					<div>
 						<table id="tstructure" class="w3-table w3-striped w3-bordered">
-						
+
 						</table>
-					
+
 					</div>
 				<!-- display table structure end -->
-								
+
                   <button onclick="accordion('AC')" class="w3-btn-block w3-center w3-border w3-light-grey w3-left-align">Add a Column(s) <i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
                   <div id="AC" class="w3-hide w3-container ">
                       <p>
@@ -682,22 +552,6 @@
                       </p>
                       <p><button class="w3-btn w3-blue-grey w3-right w3-round-xlarge" id="renametable" onclick="RenameTable();">RENAME TABLE</button></p>
 
-                  </div>
-                  <button onclick="accordion('AIT')" class="w3-btn-block w3-light-grey w3-light-border w3-center">ADD/Drop CONSTRAINTS TO COLUMN<i class="fa fa-angle-double-down w3-right w3-xlarge"></i></button>
-                  <div id="AIT" class="w3-hide w3-container">
-                  <p>
-                  <table class="w3-table">
-                    <tr class="w3-light-grey"><th>Constraint</th><th>Column name</th></tr>
-                    <tr class="w3-light-grey"><td><select onclick="GetColumn()" id="Constraint_name"><option>Select Contraint</option><option value="P_K">Primary Key</option><option value="U_K">Unique Key</option><option value="F_K">Foreign Key</option></select></td>    
-                    <td><select id="Table_Columns" onclick="reference_table()"><option value=0>Select Columns</option></select></td></tr>
-                    <tr><td></td>
-                    <td id="HideFirst">references table :<select id = "ref_TbnameInput" name="TDD" onclick="reference_column()">
-                                    <option value = 0>Select Table</option>
-                                </select> <select id="reference_column_list"><option value=0>Select column</option></select> </td></tr>
-                  </table>
-                  <button class="w3-right w3-btn w3-round-xlarge w3-blue-grey" id="add_index" onclick="Add_Indexes()">ADD</button>
-                  <button class="w3-right w3-btn w3-round-xlarge w3-blue-grey" id="add_index" onclick="Drop_Indexes()">Drop      </button>
-                   </p> 
                   </div>
                     <br>
                     <br>
