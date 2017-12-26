@@ -239,6 +239,102 @@ case "SelectExecution":
 
         break;
 
+    case "desc_column_list":
+        $query_Stat=$_POST['Query'];
+        $tablename=$_POST['t_name'];
+
+            $result=mysqli_query($conn,$query_Stat);
+            echo "<option value=0>Select Column</option>";           
+
+            while($data = mysqli_fetch_row($result))
+            {
+                echo "<option value='$data[0]'>".$data[0]."</option>";
+                
+            }
+
+
+    break;
+
+    case "Add_primary_key":
+       $query_Stat=$_POST['Query'];
+       $result = mysqli_query($conn,$query_Stat);
+       if($result == true)
+       {
+            echo "Primary key sucessfully added";
+       }
+       else
+       {
+            echo "Primary key already exist OR Error in query fired";
+       }
+
+    break;
+    case "Drop_primary_key":
+       $query_Stat=$_POST['Query'];
+       $result = mysqli_query($conn,$query_Stat);
+       if($result == true)
+       {
+            echo "Primary Key successfully Droped";
+       }
+       else
+       {
+            echo "Primary key Doesn't exist OR Error in query fired";
+       }
+
+    break;
+    case "Add_unique_key":
+       $query_Stat=$_POST['Query'];
+       $result = mysqli_query($conn,$query_Stat);
+       if($result == true)
+       {
+            echo "Unique key sucessfully added";
+       }
+       else
+       {
+            echo "Unique key already exist OR Error in query fired";
+       }
+
+    break;
+
+    case "Drop_unique_key":
+       $query_Stat=$_POST['Query'];
+       $result = mysqli_query($conn,$query_Stat);
+       if($result == true)
+       {
+            echo "Unique Key successfully Droped";
+       }
+       else
+       {
+            echo "Unique key Doesn't exist OR Error in query fired";
+       }
+
+    break;
+
+    case "Add_foreign_key":
+      $query_Stat = $_POST['Query'];
+      $result = mysqli_query($conn,$query_Stat);
+      if($result == true)
+      {
+          echo "Foreign Key successfully Added";
+      }
+      else
+      {
+          echo "Foreign key doesn't Added ! Select correct reference table and Try again";
+      }
+    break;
+
+    case "Drop_foreign_key":
+      $query_Stat = $_POST['Query'];
+      $result = mysqli_query($conn,$query_Stat);
+      if($result == true)
+      {
+          echo "Foreign Key successfully Droped";
+      }
+      else
+      {
+          echo "Foreign Key doesn;t Droped";
+      }
+    break;
+
     case "descTbInsertion":
 
 
