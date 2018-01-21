@@ -128,10 +128,91 @@
         });
 
     </script>
+<style type="text/css">
+  .highlight{
+    margin:auto;
+    background-color:#ffffff;
+    position:relative;
+    padding:0;
+    outline:0;
+    z-index: 5;
+    box-shadow: 0px 0px 30px #ffffff;
+  }
+  .modal{
+    z-index:3;
+    display:none;
+    position:fixed;
+    left: 0;
+    top: 0;
+    width:100%;
+    height:100%;
+    overflow:auto;
+    background-color:rgb(0,0,0);
+    background-color:rgba(0,0,20,0.7)
+  }
+  .circleBase {
+    border-radius: 50%;
+    padding: 60px;
+
+  }
+
+  .type3 {
+    
+    margin-top: 50px;
+    width: 350px;
+    height: 350px;
+    z-index: 10;
+    box-shadow: 0px 0px 30px #ffffff;
+    animation-name: pop;
+    animation-duration: 0.5s;
+  }
+  @keyframes pop {
+    from {width: 300px; height: 300px;}
+    to {width: 350px; height: 350px;}
+  }
+</style>
 
 </head>
 <body onload="GetTbList(); getNO();">
+  <script type="text/javascript">
+    //tour code
+  
+    var description = [
+    ['tbDropDown','select your table'],
+    ['dropT','Drop selected table'],
+    ['RESET','Reset selection'],
+    ['chartWindow','Displays basic information'],
+    ];
 
+    var item = 0;
+
+    function tour(){
+    if(item!=0)
+    {
+      document.getElementById(description[item-1][0]).classList.remove("highlight");
+    }
+    if(item!=4){
+      document.getElementById('modal').style.display='block';
+      document.getElementById('desc').style.display='flex';
+      document.getElementById(description[item][0]).classList.add('highlight');
+      document.getElementById('tour_ques').style.display = 'none';
+      document.getElementById('text_desc').innerHTML=description[item][1];
+      item = item + 1;
+    }else {
+      document.getElementById('modal').style.display='none';
+      document.getElementById('desc').style.display='none'
+      document.getElementById('tour_ques').style.display = 'block';
+      document.getElementById('tour_ques').innerHTML = "<i class='w3-xxxlarge'>You are good to go</i>";
+    }
+  }
+
+  function skip(){
+    document.getElementById('modal').style.display='none';
+    document.getElementById('desc').style.display='none';
+    document.getElementById('tour_ques').style.display = 'block';
+    document.getElementById('tour_ques').innerHTML = "<i class='w3-xxxlarge'>You are good to go</i>.";
+  }
+  </script>
 
     <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
         <br>
@@ -245,12 +326,33 @@
                     </div>
 
 
-                  <p class="w3-right"><button id="dropT" class="w3-btn w3-signal-red w3-round-xlarge">Drop Table</button>
+                  <p class="w3-right"><button id="dropT" class="w3-btn w3-signal-red w3-round-xlarge" style="background-color:#a02128">Drop Table</button>
 
-                      <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge">Refresh</button></p>
+                      <button id="RESET" class="w3-btn w3-signal-red w3-round-xlarge" style="background-color:#a02128">Refresh</button></p>
 
                 </div>
                 <br>
+                <!--testing tour-->
+                    <div class="w3-layout-container">
+                      <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey w3-center" style="width:70%; height: 20vh;" id="action">
+                  <div id="desc" class="w3-center highlight circleBase type3" style="display: none;transform: translateY(-100px);" >
+                    <div id="text_desc" style="font-family: monospace;">
+                      
+                    </div>
+                    <hr>
+                    <div style="position: absolute; bottom: 50px; right: 80px;">
+                    <button class="w3-button w3-round" onclick="skip()"> SKIP</button>
+                    <button class="w3-button w3-round" onclick="tour();"> NEXT >></button>
+                    </div>
+                  </div>
+                  <div id="tour_ques">
+                    <h1>Take a tour of the Web app?</h1><br>
+                    <button class="w3-button w3-light-grey w3-round" id="tour_yes" onclick="tour();">Yes</button>
+                    <button class="w3-button w3-light-grey w3-round" id="skip" onclick="skip()">Skip</button>
+                  </div>
+                  </div>
+                  </div>    
+                <!--tour end-->
             </div>
             <!-- Action section end -->
 
@@ -305,7 +407,7 @@
       <p class=" w3-right">Copyright © 2017 All rights reserved</p>
     </footer>
   </div>
-
+<div id="modal" class="modal"></div>
 
 
 </body>

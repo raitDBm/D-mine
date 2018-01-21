@@ -3,9 +3,10 @@
 <head>
 <title>RAIT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/w3.css">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-red.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script>
@@ -152,13 +153,98 @@
     		});
     	}
 
-  </script>
+  
+    
+  </script>  
+
+<style type="text/css">
+  .highlight{
+    margin:auto;
+    background-color:#ffffff;
+    position:relative;
+    padding:0;
+    outline:0;
+    z-index: 5;
+    box-shadow: 0px 0px 30px #ffffff;
+  }
+  .modal{
+    z-index:3;
+    display:none;
+    position:fixed;
+    left: 0;
+    top: 0;
+    width:100%;
+    height:100%;
+    overflow:auto;
+    background-color:rgb(0,0,0);
+    background-color:rgba(0,0,20,0.7)
+  }
+  .circleBase {
+    border-radius: 50%;
+    padding: 60px;
+
+  }
+
+  .type3 {
+    
+    margin-top: 50px;
+    width: 350px;
+    height: 350px;
+    z-index: 10;
+    box-shadow: 0px 0px 30px #ffffff;
+    animation-name: pop;
+    animation-duration: 0.5s;
+  }
+  @keyframes pop {
+    from {width: 300px; height: 300px;}
+    to {width: 350px; height: 350px;}
+  }
+</style>
 </head>
 <body onload="getNO();">
+  <script type="text/javascript">
+    //tour code
+  
+    var description = [
+    ['sidenav', 'This is sidenav , you can use this to navigate through all the DDL And DML commands.<br>Your <b>Roll number</b> is also the name of your <b>database name</b> in which all your tables will be saved.'],
+    ['TbnameInput','Enter table name here...'],
+    ['NoOfColInput','Enter number of columns here...'],
+    ['addbtn','click to add columns'],
+    ['CRE','click to create table'],
+    ['chartWindow','display basic information']
+    ];
 
+    var item = 0;
 
+    function tour(){
+    if(item!=0)
+    {
+      document.getElementById(description[item-1][0]).classList.remove("highlight");
+    }
+    if(item!=6){
+      document.getElementById('modal').style.display='block';
+      document.getElementById('desc').style.display='flex';
+      document.getElementById(description[item][0]).classList.add('highlight');
+      document.getElementById('tour_ques').style.display = 'none';
+      document.getElementById('text_desc').innerHTML=description[item][1];
+      item = item + 1;
+    }else {
+      document.getElementById('modal').style.display='none';
+      document.getElementById('desc').style.display='none';
+      document.getElementById('tour_ques').style.display = 'block';
+      document.getElementById('tour_ques').innerHTML = "<i class='w3-xxxlarge'>You are good to go</i><br>Start by creating some awesome Tables which is in the DDL Engine tab.";
+    }
+  }
+  function skip(){
+    document.getElementById('modal').style.display='none';
+    document.getElementById('desc').style.display='none';
+    document.getElementById('tour_ques').style.display = 'block';
+    document.getElementById('tour_ques').innerHTML = "<i class='w3-xxxlarge'>You are good to go</i><br>Start by creating some awesome Tables which is in the DDL Engine tab.";
+  }
+  </script>
 
 <!-- side navigation bar start -->
+<div id="sidenav">
   <nav class="w3-sidenav w3-signal-red w3-card-8" style="width:190px;">
     <br>
     <br>
@@ -224,6 +310,7 @@
     <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
   </nav>
+</div>
 <!-- side navigation bar end -->
 
   <div class="w3-main" style="margin-left:190px">
@@ -244,6 +331,7 @@
               <p id="cmdWindow"><span class="w3-text-red">NOTE: Create Some cool tables :) </span></p>
             </div>
         </div>
+        
         <!-- Query view section end-->
 
         <div class="w3-layout-container">
@@ -266,7 +354,7 @@
                     <tr>
                       <td><label class="w3-label w3-text-blue">Number of columns<span class="w3-text-red">*</span>:&nbsp</label></td>
                       <td><input id="NoOfColInput" class="w3-input w3-border-bottom" type="text" style="width:90%"></td>
-                      <td><button onclick="ColGenerator();">Add</button></td>
+                      <td><button id="addbtn" onclick="ColGenerator();">Add</button></td>
                     </tr>
                   </table>
                   <p>
@@ -281,22 +369,44 @@
                     </thead>
                   </table>
                 </p>
-                  <p class="w3-right"><button id="CRE" class="w3-btn w3-signal-red w3-round-xlarge">CREATE</button></p>
+                  <p class="w3-right"><button id="CRE" class="w3-btn w3-signal-red w3-round-xlarge" style="background-color:#a02128">CREATE</button></p>
                 </div>
                 <br>
+                <!--testing tour-->
+                    <div class="w3-layout-container">
+                      <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey w3-center" style="width:70%; height: 20vh;" id="action">
+                  <div id="desc" class="w3-center highlight circleBase type3" style="display: none;transform: translateY(-150px);" >
+                    <div id="text_desc" style="font-family: monospace;">
+                      
+                    </div>
+                    <hr>
+                    <div style="position: absolute; bottom: 20px; right: 80px;">
+                    <button class="w3-button w3-round" onclick="skip()"> SKIP</button>
+                    <button class="w3-button w3-round" onclick="tour();"> NEXT >></button>
+                    </div>
+                  </div>
+                  <div id="tour_ques">
+                    <h1>Take a tour of the Web app?</h1><br>
+                    <button class="w3-button w3-light-grey w3-round" id="tour_yes" onclick="tour();">Yes</button>
+                    <button class="w3-button w3-light-grey w3-round" id="skip" onclick="skip()">Skip</button>
+                  </div>
+                  </div>
+                  </div>    
+                <!--tour end-->
             </div>
+
             <!-- Action section end -->
 
             <!-- flow Chart section start -->
             <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
               <p>
               <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
-               <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)">
+               <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(desc)">
                   <div class="w3-tag w3-round w3-green w3-border w3-border-white">
-                    Description :
+                    desc :
                   </div>
                 </div></p>
-              <p id ="description">The MySQL CREATE TABLE statement allows you to create and define a table.</p>
+              <p id ="desc">The MySQL CREATE TABLE statement allows you to create and define a table.</p>
               </div>
               </p>
 
@@ -341,7 +451,9 @@
       <p class=" w3-right">Copyright © 2017 All rights reserved</p>
     </footer>
   </div>
-
+  <div class="modal" id="modal">
+  
+  </div>
 
 
 </body>
