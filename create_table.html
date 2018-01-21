@@ -44,14 +44,25 @@
 
                       '<td>'
                       +
-                      '<select id="type' + i + '" >' +
-                      '<option value="int"> int </option>' +
-                      '<option value="varchar"> varchar </option>' +
-                      '<option value="text"> text </option>' +
-                      '<option value="char"> char </option>' +
-                      '<option value="date"> date </option>' +
-                      '<option value="time"> time </option>' +
-                      '<option value="year"> year </option>' +
+                       '<select id="type' + i + '" >' +
+                        '<optgroup label="Numeric">'+
+                        '<option value="int"> INT </option>' +
+                       '<option value="float"> FLOAT </option>' +
+                       '<option value="double"> DOUBLE </option>' +
+                       '</optgroup>'+
+                       '<optgroup label="Date and time">'+
+                       '<option value="date"> DATE </option>' +
+                      '<option value="time"> TIME </option>' +
+                      '<option value="year"> YEAR </option>' +
+                       '</optgroup>'+
+                     '<optgroup label="String">'+
+                      '<option value="varchar"> VARCHAR </option>' +                     
+                      '<option value="char"> CHAR </option>' +
+                        '<option value="text"> TEXT </option>' +
+                      
+                       '</optgroup>'+
+                       
+                       
                       '<select>'
                       +
                       '</td>'+

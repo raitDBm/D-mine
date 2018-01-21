@@ -109,9 +109,19 @@
                                 '<option value="' + result[i] + '">' + result[i] + '</option>'
                             );
                     }
+                    for (var i = 0; i < countItem; i++) {
+                        $('#tbDropDown1')
+                            .append(
+
+                                '<option value="' + result[i] + '">' + result[i] + '</option>'
+                            );
+                    }
+                    
                 }
             });
         }
+
+
 
 	$(document).ready(function(){
 
@@ -141,6 +151,10 @@
                   }
                   });
             }
+        });
+
+        $("#add_foreign_key").click(function(){
+            $("#Reference_div").show();
         });
       });
 
@@ -237,7 +251,7 @@
         	if(ntname=="")
         	{
         		alertMsg="Please Fill All Field";
-        		$("alertBoxMain").show();
+        		$("#alertBoxMain").show();
         		document.getElementById("alertMsg").innerHTML=alertMsg;
         	}
         	else
@@ -296,6 +310,220 @@
 
 		}
 
+    function GetColumnList(tname)
+    {
+        
+        var t_name=tname;
+        tago="desc_column_list";
+        var query = "DESCRIBE "+t_name+";";
+        dataString = 'tag='+ tago + '&Query=' + query + '&t_name='+ t_name;
+        if(t_name == 0)
+        {
+            alertMsg="Please Fill All Field";
+            $("alertBoxMain").show();
+            document.getElementById("alertMsg").innerHTML=alertMsg;
+        }
+        else
+        {
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                cache: false,
+                success: function(result){
+                $("#ColumnList").html(result);
+                      
+                    }
+                  });
+        }
+    }
+  function GetColumnList1(tname)
+    {
+        
+        var t_name=tname;
+        tago="desc_column_list";
+        var query = "DESCRIBE "+t_name+";";
+        dataString = 'tag='+ tago + '&Query=' + query + '&t_name='+ t_name;
+        if(t_name == 0)
+        {
+            alertMsg="Please Fill All Field";
+            $("alertBoxMain").show();
+            document.getElementById("alertBox").innerHTML=alertMsg;
+        }
+        else
+        {
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                cache: false,
+                success: function(result){
+                $("#ColumnList1").html(result);
+                      
+                    }
+                  });
+        }
+    }
+
+
+
+    function add_primary()
+    {
+        var tname = $("#tbDropDown").val();
+        var cname=$("#ColumnList").val();
+        var tago="Add_primary_key";             
+        var query = "ALTER TABLE " + tname + " ADD PRIMARY KEY (" + cname + ")";
+        dataString = 'tag='+ tago + '&Query=' + query;
+        if(tname == 0)
+        {
+            alertMsg="Please Fill All Field";
+            $("alertBoxMain").show();
+            document.getElementById("alertMsg").innerHTML=alertMsg;       
+        }
+        else
+        {
+            $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+                  $("#SUBMIT").click();
+                 alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query;
+                    }
+                  });   
+        }
+        
+
+    }
+
+    function drop_primary()
+    {
+        var tname = $("#tbDropDown").val();
+        var cname=$("#ColumnList").val();
+        var tago="Drop_primary_key";
+              
+        var query = "ALTER TABLE "+tname+" DROP PRIMARY KEY ";        
+        dataString = 'tag='+ tago + '&Query=' + query;
+        $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+                
+                $("#SUBMIT").click();
+                alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query;
+
+                    }
+                  });
+
+
+    }
+    
+    function add_unique()
+    {
+        var tname = $("#tbDropDown").val();
+        var cname=$("#ColumnList").val();
+        var tago="Add_unique_key";
+              
+        var query = "ALTER TABLE "+tname+" ADD UNIQUE KEY ("+cname+")";
+        
+        dataString = 'tag='+ tago + '&Query=' + query;
+        $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+                $("#SUBMIT").click();
+                alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query;
+                    }
+                  });
+    }
+    function drop_unique()
+    {
+        var tname = $("#tbDropDown").val();
+        var cname=$("#ColumnList").val();
+        var tago="Drop_unique_key";
+             
+        var query="ALTER TABLE "+tname+" DROP INDEX "+cname;        
+        dataString = 'tag='+ tago + '&Query=' + query;
+        $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                success: function(result){
+                 $("#SUBMIT").click();
+                alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query;
+                      
+                    }
+                  });   
+    }
+    
+      function add_foreign_key(){
+      tago = "Add_foreign_key";
+      tname = $("#tbDropDown").val();
+      cname = $("#ColumnList").val();
+      ref_tname = $("#tbDropDown1").val();
+      ref_cname = $("#ColumnList1").val();
+      if(tname === ref_tname)
+      {
+           
+            alertMsg="Please Used different Table to Add foreign Key";
+            $("#alertBoxMain").show();
+            document.getElementById("alertBox").innerHTML=alertMsg;
+      }
+      else
+      {
+          var query="ALTER TABLE "+tname+" ADD FOREIGN KEY("+cname+") references "+ref_tname+"("+ref_cname+");";
+          dataString = 'tag='+tago+'&Query='+query;
+           $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                cache: false,
+                success: function(result){
+                $("#SUBMIT").click();
+                alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query; 
+                        }
+                  });
+      }
+
+    }
+
+    function drop_foreign_key()
+    {
+      tago = "Drop_foreign_key";
+      tname = $("#tbDropDown").val();
+      query = "ALTER TABLE "+tname+" DROP FOREIGN KEY "+tname+"_ibfk_"+1;
+      dataString = 'tag='+tago+'&Query='+query;
+      $.ajax({
+                type: "POST",
+                url: "queryExecutor.php",
+                data: dataString,
+                cache: false,
+                success: function(result){
+                $("#SUBMIT").click();
+                alertMsg=result;
+                $("#alertBoxMain").show();
+                document.getElementById("alertBox").innerHTML=alertMsg;
+                document.getElementById("cmdWindow").innerHTML=query; 
+                        }
+                  });  
+    }
     function getNO()
     {
       var tago="getNO";
@@ -313,6 +541,8 @@
               }
           });
     }
+
+
 
     function logout()
     {
@@ -457,7 +687,7 @@
                         <div><p><label class="w3-label w3-text-blue">Select Table<span class="w3-text-red">*</span>:</label>
 
 
-                                    <select id = "tbDropDown" name="TDD">
+                                    <select id = "tbDropDown" name="TDD" onclick="GetColumnList(this.value)">
                                         <option value = 0>Select Table</option>
                                     </select></p>
 
@@ -520,11 +750,42 @@
                   <div id="RCT" class="w3-hide w3-container">
                       <p>
                       	<label class="w3-text-blue">New Table name:<span class="w3-text-red">*</span></label>
-                      	<input class="w3-input w3-border"type="text" id="ntname">
+                      	<input class="w3-input w3-border" type="text" id="ntname">
                       </p>
                       <p><button class="w3-btn w3-blue-grey w3-right w3-round-xlarge" id="renametable" onclick="RenameTable();">RENAME TABLE</button></p>
 
                   </div>
+                  <button onclick="accordion('ACCT');" class="w3-btn-block w3-border w3-light-grey">Alter Constraint<i class="fa fa-angle-double-down w3-right w3-xlarge "></i></button>
+                      <div id="ACCT" class="w3-hide w3-container">
+                          <p>
+                          
+                          <label class="w3-label w3-text-blue">Select Column<span class="w3-text-red">*</span>:</label>  
+                            <select id="ColumnList">
+                              <option value="0"> Select Column</option>
+                            </select>
+                          </p>
+                          <br>
+                          <button type="button" class="w3-btn w3-round-xlarge w3-green" onclick="add_primary()">Add Primary Key Constraint</button>&nbsp;
+                          <button type="button" class="w3-btn w3-round-xlarge w3-red w3-right" onclick="drop_primary()">Drop Primary Key Constraint</button><br><br>
+                          <button type="button" class="w3-btn w3-round-xlarge w3-green" onclick="add_unique()">Add Unique Key Constraint</button>&nbsp;
+                          <button type="button" class="w3-btn w3-round-xlarge w3-red w3-right" onclick="drop_unique()">Drop Unique Key Constraint</button><br><br>
+
+                          <button type="button" class="w3-btn w3-round-xlarge w3-green" id="add_foreign_key">Add Foreign Key Constraint</button>&nbsp;
+                          <button type="button" class="w3-btn w3-round-xlarge w3-red w3-right" onclick="drop_foreign_key()">Drop Foreign Key Constraint</button><br>
+                          <div id="Reference_div" style="display: none;">
+                          <br>
+                            <label class="w3-label w3-text-blue">Select Reference Table<span class="w3-text-red">*</span>:</label>  
+                            <select id="tbDropDown1" onclick="GetColumnList1(this.value)">
+                              <option value="0"> Select Column</option>
+                            </select>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="w3-label w3-text-blue">Select Column<span class="w3-text-red">*</span>:</label>  
+                            <select id="ColumnList1">
+                              <option value="0"> Select Column</option>
+                            </select><br><br>
+                            <button type="button" class="w3-btn w3-round-xlarge w3-signal-red w3-right" onclick="add_foreign_key()">Add</button>
+                          </div>
+                      </div>
                     <br>
                     <br>
 
