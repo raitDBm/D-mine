@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<title>D-Mine: Admin page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="css/w3-theme.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+body {font-family: "Roboto", sans-serif}
+.w3-bar-block .w3-bar-item{padding:16px;font-weight:bold}
+.max-width{max-width: 700px}
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  animation:animatetop 0.4s
+}@keyframes animatetop{from{top:-300px;opacity:0} to{top:0;opacity:1}}
+
+</style>
+<script>
+// Open and close the sidebar on medium and small screens
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+}
+function generateyear()
+{
+	var optionlist="<option value=''></option>";
+	for(var i=2015;i<=2050;i++)
+	{
+		optionlist += "<option value="+i+">"+i+"</option>";
+	}
+	document.getElementById('regyear').innerHTML=optionlist;
+	divisions();
+}
+
+function divisions()
+{
+	var division = document.getElementById('division');
+	var optionlist="<option value=''></option>";
+	var a = ["A","B","C","D","E"]
+	for(var i=0;i<a.length;i++)
+	{
+		optionlist += "<option value="+a[i]+">"+a[i]+"</option>";
+	}
+	division.innerHTML = optionlist;
+}
+
+function generatebatches(division)
+{
+	var optionlist="<option value=''></option>";
+	for(var i=1;i<=4;i++)
+	{
+		optionlist += "<option value="+division+i+">"+division+i+"</option>";
+	}
+	document.getElementById('batch').innerHTML=optionlist;
+
+}
+
+
+function submit (){
+	var flag=0;
+    var regyear = $("#regyear").val();
+    var email = $("#email").val();
+    var roll_no = $("#roll_no").val();
+    var division = $("#division").val();
+    var batch = $("#batch").val();
+    var tago="retrievedbs";
+    var dataString = 'tag='+ tago + '&dbName='+ name;
+    if(regyear === '' && email === '' && roll_no === '' && division === '' && batch === '')
+	{
+		alert("please fill atleast one field");
+	}
+	/*
+		flag=1;
+		console.log("regyear");
+	}else if(year !== '')
+	{
+		flag=1;
+		console.log("year");
+	}else if(email !== '')
+	{
+		flag=1;
+		console.log("email");
+	}else if(roll_no !== '')
+	{
+		flag=1;
+		console.log("roll_no");
+	}else if(division !== '')
+	{
+		flag=1;
+		console.log("division");
+	}else if(batch !== '')
+	{
+		flag=1;
+		console.log("batch");
+	}*/
+    
+    else{
+	var flag = 0;
+	var query = "SELECT roll_no,name,email,division,batch,year FROM students WHERE ";
+	if(regyear !== '')
+	{
+		if(flag === 0)
+		{
+			flag = 1;
+			query+= " year = '" + regyear + "'";
+		}else
+			query+= " AND year = '" + regyear + "'"; 
+	}
+	if(email !== '')
+	{
+		if(flag === 0)
+		{
+			flag = 1;
+			query+= " email = '" + email + "'";
+		}else
+		query+= " AND email = '" + email + "'";
+	}if(roll_no !== '')
+	{
+		if(flag === 0)
+		{
+			flag = 1;
+			query+= " roll_no = '" + roll_no + "'";
+		}else
+		query+= " AND roll_no = '" + roll_no + "'";
+	}
+	if(division !== '')
+	{
+		if(flag === 0)
+		{
+			flag = 1;
+			query+= " division = '" + division + "'";
+		}else
+		query+= " AND division = '" + division + "'";
+	}
+	if(batch !== '')
+	{
+		if(flag === 0)
+		{
+			flag = 1;
+			query+= " batch '= " + batch + "'";
+		}else
+		query+= " AND batch = '" + batch + "'";
+	}
+	alert(query);
+	/*
+          $.ajax({
+          type: "POST",
+          url: "queryExecutor.php",
+          data: dataString,
+          success: function(result){
+            alertMsg=result;
+            var cmd = "CREATE DATABASE '"+name+"';";
+            $("#alertBoxMain").show();
+            document.getElementById("alertBox").innerHTML=alertMsg;
+            document.getElementById("cmdWindow").innerHTML=cmd;
+          }
+          });*/
+    }
+}
+
+</script>
+<body onload="generateyear();">
+
+<!-- side nav starts-->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-card-4 w3-animate-left" style="width:250px;z-index:6;" id="mySidebar">
+  <a class="w3-bar-item w3-button w3-border-bottom w3-large" href="admin.html"><img src="images/admin.png" style="width:100%;"></a>
+  <a class="w3-bar-item w3-button w3-hide-large w3-large" href="javascript:void(0)" onclick="w3_close()">Close <i class="fa fa-remove"></i></a>
+  <a class="w3-bar-item w3-button w3-theme" href="delete_db.html">Delete Databases</a>
+
+</nav>
+<!-- side nav ends-->
+
+<!--overlay div after opening the side nav starts-->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="myOverlay"></div>
+<!--overlay div after opening the side nav ends-->
+
+
+<!--main website container starts-->
+<div class="w3-main" style="margin-left:250px;">
+
+
+<!-- top header starts-->
+<div id='topdiv'>
+    <header class="w3-container w3-light-grey w3-border-bottom" >
+    <h3 id="topheader"><img src="images/logo.png" height="40px"></h3>
+    </header>
+</div>
+<!-- top header ends-->
+
+
+<!--action section starts-->
+<div class="w3-container">
+	<h2 class="w3-center">Delete Databases and Users</h2>
+	<div class="w3-card-2 w3-container w3-leftbar w3-pale-yellow w3-border-yellow w3-padding">NOTE: These are all search parameters which are all optional<br>The more parameters you give the more precise will be the search results</div>
+	<br>
+		<label><b>Registration Year(on dmine app)<b></label>
+		<select id="regyear" name="regyear" class="w3-input" style="margin-bottom:10px;" required>
+
+		</select>
+		<label>email-id</label>
+		<input type="email" name="email" id="email" class="w3-input" style="margin-bottom:10px;">
+		<label>Roll Number</label>
+		<input type="text" name="roll_no" id="roll_no" class="w3-input" style="margin-bottom:10px;">
+    <label><b>Division</b></label>
+    <select id="division" name="division" id="division" onchange="generatebatches(this.value);" class="w3-input" style="margin-bottom:10px;">
+
+    </select>
+    <label><b>Batch</b></label>
+    <select id="batch" name="batch" id="batch" class="w3-input" style="margin-bottom:10px;">
+		<option value=''></option>
+    </select>
+
+		<button type="submit" name="submit_btn" id="submit_btn"  class="w3-btn w3-round-xlarge w3-theme w3-margin-top w3-red" onclick="submit();">SUBMIT</button>
+
+</div>
+
+<div id="table-container" class="w3-container" style="overflow: scroll; display: none;" >
+
+</div>
+<!--action section ends-->
+
+
+
+
+
+
+
+</body>
+</html>

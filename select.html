@@ -2,7 +2,9 @@
 <html>
 <head>
 <title>RAIT</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
 <link rel="stylesheet" href="css/w3.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
@@ -80,7 +82,7 @@
         data: dataValues,
         success: function(result){
           document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
-          setInterval(function(){window.location.replace("login.html")},2000);
+          setInterval(function(){window.location.replace("index.html")},2000);
         }
         });
       }
@@ -204,7 +206,7 @@
       <p id = "studentNo"></p>
       <hr>
     </div>
-    <a href="index.html"><i class="fa fa-home"></i> HOME</a>
+    <a href="home.html"><i class="fa fa-home"></i> HOME</a>
      <div class="w3-accordion">
       <a onclick="DropdownFunc(ddl)" href="#">
       <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
@@ -258,8 +260,9 @@
 
     <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
 
-    <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+    <a href="reference.html"><i class="fa fa-puzzle-piece"></i> Reference</a>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
+    <p class="w3-bottom ">&nbsp&nbsp&nbspCopyright © 2017</p>
   </nav>
 <!-- side navigation bar end -->
 
@@ -273,19 +276,20 @@
     <!-- Logo and all end -->
 
     <div id="mainWindow">
-      <div class="w3-layout-container">
+      <div class="w3-container">
+        <br>
         <!-- Query view section start-->
         <div class="w3-layout-container">
-            <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey" style="width:100%; height: 50px;">
+            <div class="w3-container w3-layout-col w3-card" style="width:100%; height: 50px;">
               <p id="cmdWindow">SELECT  </p>
             </div>
         </div>
         <!-- Query view section end -->
-
+<br>
 
         <div class="w3-layout-container">
             <!-- Action section start -->
-            <div id="actionWindow" class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
+            <div id="actionWindow" class="w3-container w3-layout-col w3-card" style="width:70%; height: 576px;">
 
 
                 <br>
@@ -306,7 +310,7 @@
 
               </div>
 
-                  <textarea class="w3-light-grey" id ="sqlcmdarea" name="message" rows="7" cols="105" autofocus></textarea>
+                  <textarea class="w3-light-grey" id ="sqlcmdarea" name="message" rows="7" autofocus style = "width: 100%;"></textarea>
                   <br>
                 <div class="w3-container w3-border-left w3-border-right ">
                   <p>
@@ -343,15 +347,15 @@
                     <div id="RIGHT JOIN" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       RIGHT JOIN
                     </div>
-                  </p>
-
-                  <p>
                     <div id="OUTER JOIN" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       OUTER JOIN
                     </div>
                     <div id="AS" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       AS
                     </div>
+                  </p>
+
+                  <p>
                     <div id="BETWEEN" class="w3-tag w3-round w3-hover-red  w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       BETWEEN
                     </div>
@@ -382,10 +386,6 @@
                     <div id="ON" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       ON
                     </div>
-                  </p>
-
-                  <p>
-
                     <div id="AND" class="w3-tag w3-round w3-hover-red w3-white w3-border w3-border-red" onclick="AddTagsOnclick(this.id)">
                       AND
                     </div>
@@ -407,7 +407,7 @@
               </div>
             <!-- Action section end -->
             <!-- flow Chart section start -->
-            <div id="chartWindow" class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
+            <div id="chartWindow" class="w3-container w3-layout-col w3-card" >
               <p>
                 <div class="w3-panel w3-pale-green w3-border-left w3-border-green">
               <p> <div class="w3-tag w3-round w3-green" style="padding:3px" onclick="showANDhideBox(description)">
@@ -456,8 +456,8 @@
             <!-- flow Chart section start end -->
         </div>
 
-        <div id="id01" class="w3-modal">
-          <div class="w3-modal-content">
+        <div id="id01" class="w3-modal" onclick="document.getElementById('id01').style.display='none'" >
+          <div class="w3-modal-content" >
             <div class="w3-container">
               <span onclick="document.getElementById('id01').style.display='none'" class=" w3-white w3-button w3-display-topright"><i class="fa fa-close" style="font-size:25px;color:red"></i></span>
               <div id="selTableShow" class="w3-container" style =" overflow: scroll; overflow-y: hidden;">
@@ -468,9 +468,6 @@
           </div>
         </div>
 
-    <footer class="w3-container w3-light-grey w3-border-top">
-      <p class=" w3-right">Copyright © 2017 All rights reserved</p>
-    </footer>
   </div>
 
 

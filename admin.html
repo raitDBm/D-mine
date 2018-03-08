@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<title>College Buddy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="css/w3-theme.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {font-family: "Roboto", sans-serif}
+.w3-bar-block .w3-bar-item{padding:16px;font-weight:bold}
+.max-width{max-width: 700px}
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  animation:animatetop 0.4s
+}@keyframes animatetop{from{top:-300px;opacity:0} to{top:0;opacity:1}}
+
+@media (min-width:993px){
+  .hide-large{display:none!important}
+}
+</style>
+
+<body>
+
+<!-- side nav starts-->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-card-4 w3-animate-left" style="width:250px;z-index:6;" id="mySidebar">
+  <a class="w3-bar-item w3-button w3-border-bottom w3-large" href="#"><img src="images/admin.png" style="width:100%;"></a>
+  <a class="w3-bar-item w3-button w3-hide-large w3-large" href="javascript:void(0)" onclick="w3_close()">Close <i class="fa fa-remove"></i></a>
+  <a class="w3-bar-item w3-button w3-theme" href="delete_db.html">Delete Databases</a>
+
+</nav>
+<!-- side nav ends-->
+
+<!--overlay div after opening the side nav starts-->
+<div class="w3-overlay hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="myOverlay"></div>
+<!--overlay div after opening the side nav ends-->
+
+
+<!--main website container starts-->
+<div class="w3-main" style="margin-left:250px;">
+
+
+<!-- top header starts-->
+<div id='topdiv'>
+    <header class="w3-container w3-light-grey w3-border-bottom" >
+    <h3 id="topheader"><img src="images/logo.png" height="40px"></h3>
+    </header>
+</div>
+<div class="w3-theme w3-container top w3-row">
+
+    <p><i class="fa fa-bars w3-button w3-theme hide-large w3-xlarge" onclick="w3_open()"></i>
+    <span class="w3-xlarge" >D-mine: Admin Homepage</span>
+    </p>
+</div>
+<!-- top header ends-->
+
+
+<!--action section starts-->
+<div class="w3-container">
+<p>
+<h3>Welcome to admin page</h3><br>
+Here you can do multiple tasks like 
+<ul>
+<li>deleting databases</li>
+<li>adding faculties</li>
+</ul>
+</p>
+
+</div>
+<!--action section ends-->
+
+
+<script>
+// Open and close the sidebar on medium and small screens
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+}
+</script>
+
+
+
+
+</body>
+</html>

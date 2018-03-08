@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RAIT</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/mark.js/7.0.0/jquery.mark.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+	.logoHolder{
+		text-align: center;
+		margin: 20px;
+		font-weight:bold;
+		text-shadow:1px 1px grey;
+	}
+	.qrs{
+		border-top: 1px solid grey;
+		border-right:  1px solid grey;
+		border-bottom:  1px solid grey;
+	    width: auto;
+	    border-radius: 5px;
+	    margin-top: 10px;
+	    margin-bottom: 10px;
+	    background-color: #fff;
+	    font-family: "Lucida Console";
+	    padding: 8px 12px;
+	    border-left: 4px solid #4CAF50;
+	    word-wrap: break-word;
+	}
+	.button{
+		border: 1px;
+		color: white;
+		background-color: #27ae60;
+		padding: 15px 32px;
+		margin-right:10px;
+		text-align: center;
+		text-decoration: bold italic;
+		font-family: sans-serif;
+		font-size: 16px;
+		display: inline-block;
+	}
+	.button:hover{
+		box-shadow: 3px 3px 7px grey;
+		opacity: 0.7;
+	}
+
+	 .search-found {
+	     background-color: #FFFF00;
+	 }
+
+	 mark{
+	    background: orange;
+	    color: black;
+	}
+	.mainContent{
+		overflow:auto;
+		background:white;
+		padding:10px;
+		width:90%;
+		margin:0 auto 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		transition: 0.3s;
+	}
+	body{
+		background-image:url("./images/bgp.png");
+		background-repeat:repeat;
+	}
+</style>
+</head>
+<body>
+	<script>
+		$(document).ready(function() {
+
+			var searchTerm, panelContainerId;
+			$.expr[':'].containsCaseInsensitive = function (n, i, m) {
+				return jQuery(n).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+			};
+
+			$("input").on('keyup',function(e){
+				if(e.keyCode == 13){
+					searchTerm = $(this).val();
+					$("#accordion > .panel").each(function(){
+						panelContainerId = '#' + $(this).attr('id');
+					    $(panelContainerId + ':not(:containsCaseInsensitive(' + searchTerm + '))').hide();
+					    $(panelContainerId + ':containsCaseInsensitive(' + searchTerm + ')').show();
+					});
+				    $("#accordion > .panel:visible").each(function(){
+				    	$(this).find("a").click();
+				    	$(this).unmark().mark(searchTerm);
+				    });
+					$('html, body').animate({
+						scrollTop: ($('mark').first().offset().top)
+					},500);
+				}
+			});
+		});
+	</script>
+	<div class = "logoHolder">
+		<img src = "./images/logo.png" title = "logo" style = "max-width:100%; height:auto;"/>
+	</div>
+
+	<div class="mainContent" id="context">
+		<div class="form-group"><center>
+			<input type="search" style="width: 60%;" class="form-control" id="search" placeholder="Enter keywords to search..."> </center>
+		</div>
+		<center><div style="width: 30%;"><h2>DDL</h2></div></center>
+		<div class="panel-group" id="accordion">
+  			<div class="panel panel-default" id="expandable1">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex1" data-parent="#accordion" href="#collapse1">
+        					CREATE DATABASE</a>
+      				</h4>
+    			</div>
+    			<div id="collapse1" class="panel-collapse collapse">
+		      		<div class="panel-body">Description: This statement is used to create a new SQL database.</br>Syntax:</br>
+		      		<div class="qrs">CREATE DATABASE databasename;</div>
+		      		</div>
+			  		<div class="panel-footer">Example: </br>
+			  			<div class="qrs">CREATE DATABASE rait_db;</div></br>The above SQL statement creates a database called 'rait_db'.
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable2">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+        					CREATE TABLE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse2" class="panel-collapse collapse">
+      				<div class="panel-body">Description: The statement allows you to create and define a table.</br>Syntax: </br>
+      					<div class="qrs">CREATE TABLE table_name</br>(</br>column1 datatype [ NULL | NOT NULL ],</br>column2 datatype [ NULL | NOT NULL ],</br>...</br>);</div>
+					</div>
+		      		<div class="panel-footer">Example:</br>
+		      			<div class="qrs">CREATE TABLE students</br>(</br>stud_idint NOT NULL,</br>stud_namechar(50) NOT NULL,</br>stud_noint(10)</br>);</div></br>
+						The example creates a table called students which has 3 columns.
+							<ol>
+							<li>The first column is called stud_id which is created as a number datatype (maximum 10 digits in length) and cannot contain null values.</li>
+							<li>The second column is called stud_name which is a char datatype (50 maximum characters in length) and also can not contain null values.</li>
+							<li>The third column is called stud_no which is a int datatype but can contain null values.</li>
+							</ol>
+					</div>
+    			</div>
+  			</div>
+
+			<div class="panel panel-default" id="expandable3">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex3" data-parent="#accordion" href="#collapse3">
+        					ALTER TABLE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse3" class="panel-collapse collapse">
+      				<div class="panel-body">
+      					Description: The SQL ALTER TABLE statement is used to add, modify, or drop/delete columns in a table. The SQL ALTER TABLE statement is also used to rename a table.</br>
+      					
+						<b>Add column in table</b></br>
+						Syntax:</br>
+						<div class="qrs">ALTER TABLE table_name ADD column_name column-definition;</div></br>
+						Example:</br>
+						<div class="qrs">ALTER TABLE student ADD stud_namechar(30);</div></br>
+						This SQL ALTER TABLE example will add a column called stud_name with char datatype(30 maximum characters in length) to the student table.</br>
+					</div>
+					<div class="panel-footer">
+						<b>Modify column in table</b></br>
+						Syntax:</br>
+						<div class="qrs">ALTER TABLE tablename CHANGE old_column_name new_column_name column_type;</div></br>
+						Example:</br>
+						<div class="qrs">ALTER TABLE student CHANGE roll_no sr_no INT(4);</div></br>
+						This SQL ALTER TABLE example will modify a column called roll_no in the student table with the name sr_no and INT datatype(maximum length 4).</br>
+					</div>
+					<div class="panel-body">
+						<b>Drop column in table</b></br>
+						Syntax:</br>
+						<div class="qrs">ALTER TABLE tablename DROP COLUMN column_name;</div></br>
+						Example:</br>
+						<div class="qrs">ALTER TABLE student DROP COLUMN phn_no;</div></br>
+						This SQL ALTER TABLE example will drop a column called phn_no from the student table.</br>
+					</div>
+					<div class="panel-footer">
+						<b>Rename a table</b></br>
+						Syntax:</br>
+						<div class="qrs">ALTER TABLE old_table RENAME TO new_table;</div></br>
+						Example:</br>
+						<div class="qrs">ALTER TABLE stud_table RENAME TO student;</div></br>
+						This example would rename the stud_table to student.</br>
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable4">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex4" data-parent="#accordion" href="#collapse4">
+        					DROP DATABASE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse4" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: This statement is used to drop an existing SQL database.</br>
+						Syntax:</br>
+						<div class="qrs">DROP DATABASE databasename;</div></br>
+					</div>
+		      		<div class="panel-footer">
+		      			Example:</br>
+						<div class="qrs">DROP DATABASE rait_db;</div></br>
+						The above SQL statement drops the existing database "rait_db".</br>
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable5">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex5" data-parent="#accordion" href="#collapse5">
+        					DROP TABLE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse5" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: This statement is used to an existing table.</br>
+						Syntax:</br>
+						<div class="qrs">DROP TABLE table_name;</div></br>
+					</div>
+		      		<div class="panel-footer">
+		      			Example:</br>
+						<div class="qrs">DROP TABLE students;</div></br>
+						The above SQL statement drops the existing table 'students'.</br>
+						<b>Note:</b> This would both remove the records associated with the 'students' table as well as its table definition.
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable6">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex6" data-parent="#accordion" href="#collapse6">
+        					TRUNCATE TABLE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse6" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description:The SQL TRUNCATE TABLE statement is used to remove all records from a table.</br>
+						Syntax:</br>
+						<div class="qrs">TRUNCATE TABLE table_name;</div></br>
+					</div>
+		      		<div class="panel-footer">
+		      			Example:</br>
+						<div class="qrs">TRUNCATE TABLE student;</div></br>
+						This example would truncate the table called student and remove all records from that table.</br>
+					</div>
+    			</div>
+  			</div>
+
+			<center><div style="width: 30%;"><h2>DML</h2></div></center>
+
+  			<div class="panel panel-default" id="expandable7">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex7" data-parent="#accordion" href="#collapse7">
+        					INSERT</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse7" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: This statement is used to insert a one or more records into a table. There are 2 syntaxes for the INSERT statement depending on whether you are inserting one record or multiple records.</br>
+						Syntax:</br>
+						<div class="qrs">INSERT INTO table (column1, column2, ... ) VALUES (expression1, expression2, ... );</div></br>
+						Or the syntax for the INSERT statement when inserting multiple records in SQL is:</br>
+						<div class="qrs">INSERT INTO table (column1, column2, ... ) SELECT expression1, expression2, ... FROM source_tables [WHERE conditions];</div>
+					</div>
+		      		<div class="panel-footer">
+		      			<b>Parameters or Arguments: </b></br>
+						<b>table</b></br>
+						    The table in which to insert the records.</br>
+						<b>column1, column2</b></br>
+						    These are the columns in the table to insert values.</br>
+						<b>expression1, expression</b></br>
+						    These are the values to assign to the columns in the table. So column1 would be assigned the value of expression1, column2 would be assigned the value of expression2, and so on.</br>
+						<b>source_tables</b></br>
+						    Used when inserting records from another table. This is the source table when performing the insert.</br>
+						<b>WHERE conditions</b></br>
+						    Optional. Used when inserting records from another table. These are the conditions that must be met for the records to be inserted.
+					</div>
+					<div class="panel-body">
+						Example: Using INSERT Statement to Insert One Record
+
+						The simplest way use the INSERT statement is to insert one record into a table using the VALUES keyword. Let's look at an example of how to do this in SQL.
+
+						In this example, we have a table called categories with the following data:</br></br>
+						<center><table class="table table-striped" style="width: 20%">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>25</td>
+								<td>Deli</td>
+							</tr>
+							<tr>
+								<td>50</td>
+								<td>Produce</td>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+							<tr>
+								<td>100</td>
+								<td>General Merchandise</td>
+							</tr>
+							<tr>
+								<td>125</td>
+								<td>Technology</td>
+							</tr>
+						</table></center></br>
+						To insert a new category record. Enter the following SQL statement:</br>
+						<div class="qrs">INSERT INTO categories (category_id, category_name) VALUES (150, 'Miscellaneous');</div></br>
+						There will be 1 record inserted. Select the data from the categories table again:
+
+						<div class="qrs">SELECT * FROM categories;</div></br>
+						These are the results that you should see:</br>
+						<center><table class="table table-striped" style="width: 20%;margin-bottom: -10px;">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>25</td>
+								<td>Deli</td>
+							</tr>
+							<tr>
+								<td>50</td>
+								<td>Produce</td>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+							<tr>
+								<td>100</td>
+								<td>General Merchandise</td>
+							</tr>
+							<tr>
+								<td>125</td>
+								<td>Technology</td>
+							</tr>
+							<tr>
+								<td>150</td>
+								<td>Miscellaneous</td>
+							</tr>
+						</table></center></br>
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable8">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex8" data-parent="#accordion" href="#collapse8">
+        					UPDATE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse8" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: The SQL UPDATE statement is used to update existing records in the tables.</br>
+						Syntax:</br>
+						<div class="qrs">UPDATE table SET</br>
+						column1 = expression1,</br>
+						column2 = expression2,</br>
+						...</br>
+						[WHERE conditions];</div></br>
+						Here the WHERE conditions are optional and they mean the  conditions that must be met for the update to execute. If no conditions are provided, then all records in the table will be updated.
+					</div>
+		      		<div class="panel-footer">
+		      			Example:</br>
+						<div class="qrs">UPDATE student SET  sr_no = 20 WHERE stud_name='Namita Khanna' ;</div></br>
+						This example would update the record from the student table and set the sr_no as '20' where the student name is 'Namita Khanna'.
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable9">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id="ex9" data-parent="#accordion" href="#collapse9">
+        					DELETE</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse9" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: The SQL DELETE statement is a used to delete  one or more records from a table.</br>
+						Syntax:</br>
+						<div class="qrs">DELETE FROM table_name [WHERE conditions];</div></br>
+						Here the WHERE conditions are optional and they  mean the conditions that must be met for the records to be deleted. If no conditions are provided, all records in the table will be deleted.
+					</div>
+		      		<div class="panel-footer">
+		      			Example:</br>
+						<div class="qrs">DELETE FROM student WHERE sr_no = 20;</div></br>
+						This example would delete  the record from the student table where the sr_no is 20.
+					</div>
+    			</div>
+  			</div>
+
+  			<div class="panel panel-default" id="expandable10">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" id= "ex10" data-parent="#accordion" href="#collapse10">
+        					SELECT</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse10" class="panel-collapse collapse">
+      				<div class="panel-body">
+						Description: The SQL SELECT statement is used to display content of a particular table. Content is shown using some conditions.</br>
+						Syntax:</br>
+						<div class="qrs">SELECT <i>column_names</i> FROM <i>table_name</i> WHERE <i>conditions</i>;</div>
+						Here the WHERE conditions are optional and they  mean the conditions that must be met for the records to be shown. If no conditions are provided, all records in the table will be shown.
+					</div>
+		      		<div class="panel-footer">
+		      			Example: Using SELECT Statement to select data
+
+						The simplest way use the SELECT statement is to select entire table using *. Let's look at an example of how to do this in SQL.
+
+						In this example, we have a table called categories with the following data:</br></br>
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>25</td>
+								<td>Deli</td>
+							</tr>
+							<tr>
+								<td>50</td>
+								<td>Produce</td>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+							<tr>
+								<td>100</td>
+								<td>General Merchandise</td>
+							</tr>
+							<tr>
+								<td>125</td>
+								<td>Technology</td>
+							</tr>
+						</table></div></center></br>
+						Now to display entire content, the simplest SELECT query will be..</br>
+						<div class="qrs">SELECT * FROM categories;</div></br>
+						Thus it will show entire table. Now selecting particular row from table using WHERE clause..</br>
+						<div class="qrs">SELECT * FROM categories WHERE category_id = 75;</div></br>
+						The results are as follows..
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+						</table></div></center></br>
+						As shown, only one row gets selected!
+					</div>
+					<div class="panel-body">	
+						<b>ORDER BY</b> specifies an order in which to return the rows.
+						<br>SYNTAX:</br>
+						<div class="qrs">SELECT column1, column2,... FROM table_name ORDER BY column1, column2, ... ASC|DESC;</div>
+						Table is ordered by datatype of column and in ascending order by default.
+						EXAMPLE: 
+						<div class="qrs">SELECT * FROM categories ORDER BY category_name ASC;</div></br>
+						<center><div style="display: inline-block;"><table class="table table-striped" style="width: 20%">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+							<tr>
+								<td>25</td>
+								<td>Deli</td>
+							</tr>
+
+							<tr>
+								<td>100</td>
+								<td>General Merchandise</td>
+							</tr>
+							<tr>
+								<td>50</td>
+								<td>Produce</td>
+							</tr>
+							<tr>
+								<td>125</td>
+								<td>Technology</td>
+							</tr>
+						</table></div></center>
+						As shown, Table is ORDER BY alphabetical order of column 'category_name'.
+						<br>
+					</div>
+					<div class="panel-footer">
+						MySQL supports the <b>LIMIT</b> clause to select a limited number of records.Returning a large number of records can impact on performance.
+						<div class="qrs">SELECT * FROM categories ORDER BY category_name LIMIT 3</div>
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%">
+							<tr>
+								<th>category_id</th>
+								<th>category_name</th>
+							</tr>
+							<tr>
+								<td>75</td>
+								<td>Bakery</td>
+							</tr>
+							<tr>
+								<td>25</td>
+								<td>Deli</td>
+							</tr>
+
+							<tr>
+								<td>100</td>
+								<td>General Merchandise</td>
+							</tr>
+						</table></div></center>
+					</div>
+					<div class="panel-body">
+						<b>MIN(), MAX(), COUNT(), AVG() and SUM() FUNCTIONS</b><br>
+						SYNTAX:</br>
+						<div class="qrs">SELECT MIN|MAX|COUNT|AVG|SUM(column_name) FROM database_name;</div>
+						Consider table PRODUCTS..
+						<center><div style="display: inline-block;"><table class="table table-striped" style="width: 20%">
+							<tbody>
+								<tr>
+								    <th>ProductID</th>
+								    <th>ProductName</th>
+								    <th>SupplierID</th>
+								    <th>CategoryID</th>
+								    <th>Unit</th>
+								    <th>Price</th>
+						 		</tr>
+						  		<tr>
+								    <td>1</td>
+								    <td>Chais</td>
+								    <td>1</td>
+								    <td>1</td>
+								    <td>10</td>
+								    <td>18</td>
+								</tr>
+								  <tr>
+								    <td>2</td>
+								    <td>Chang</td>
+								    <td>1</td>
+								    <td>1</td>
+								    <td>24</td>
+								    <td>19</td>
+								  </tr>
+								  <tr>
+								    <td>3</td>
+								    <td>Aniseed Syrup</td>
+								    <td>1</td>
+								    <td>2</td>
+								    <td>12</td>
+								    <td>10</td>
+								  </tr>
+								  <tr>
+								    <td>4</td>
+								    <td>Cajun Seasoning</td>
+								    <td>2</td>
+								    <td>2</td>
+								    <td>48</td>
+								    <td>22</td>
+								  </tr>
+								  <tr>
+								    <td>5</td>
+								    <td>Gumbo Mix</td>
+								    <td>2</td>
+								    <td>2</td>
+								    <td>36</td>
+								    <td>21.35</td>
+								</tr>
+							</tbody>
+						</table></div></center>
+					</div>
+					<div class="panel-footer">
+						The <b>MIN()</b> function returns the smallest value of the selected column.<br>
+						EXAMPLE:</br>
+						<div class="qrs">SELECT MIN(price) FROM products;</div> 
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%"><tbody><tr>
+							<th>MIN(price)</th>
+						</tr>
+						<tr>
+							<td>10</td>
+						</tr>
+						</tbody></table></div></center>
+					</div>
+					<div class="panel-body">
+						The <b>MAX()</b> function returns the largest value of the selected column.<br>
+						EXAMPLE:</br>
+						<div class="qrs">SELECT MAX(price) FROM products;</div>
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%"><tbody><tr>
+							<th>MAX(price)</th>
+						</tr>
+						<tr>
+							<td>22</td>
+						</tr>
+						</tbody></table></div></center>
+					</div>
+					<div class="panel-footer">
+						The <b>COUNT()</b> function returns the number of rows that matches a specified criteria.<br>
+						EXAMPLE:</br>
+						<div class="qrs">SELECT COUNT(price) FROM PRODUCTS;</div>
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%"><tbody><tr>
+							<th>COUNT(price)</th>
+						</tr>
+						<tr>
+							<td>5</td>
+						</tr>
+						</tbody></table></div></center>
+					</div>
+					<div class="panel-body">
+						The <b>AVG()</b> function returns the average value of a numeric column.<br>
+						EXAMPLE:</br>
+						<div class="qrs">SELECT AVG(price) FROM PRODUCTS;</div>
+						<center><div style="display: inline-block;"><table class="table table-striped" style="width: 20%"><tbody><tr>
+							<th>AVG(price)</th>
+						</tr>
+						<tr>
+							<td>18.07</td>
+						</tr>
+						</tbody></table></div></center>
+					</div>
+					<div class="panel-footer">
+						The <b>SUM()</b> function returns the total sum of a numeric column.<br>
+						EXAMPLE:</br>
+						<div class="qrs">SELECT SUM(price) FROM PRODUCTS;</div>
+						<center><div style="background: white; display: inline-block;"><table class="table table-striped" style="width: 20%"><tbody><tr>
+							<th>SUM(price)</th>
+						</tr>
+						<tr>
+							<td>90.35</td>
+						</tr>
+						</tbody></table></div></center>
+					</div>
+    			</div>
+  			</div>
+		</div>	<!--accordion END-->
+	</div>
+</body>
+</html>
+
+<!--
+<div class="panel panel-default">
+    			<div class="panel-heading">
+      				<h4 class="panel-title">
+        				<a data-toggle="collapse" data-parent="#accordion" href="#collapse10">
+        					</a>
+      				</h4>		
+    			</div>
+    			<div id="collapse10" class="panel-collapse collapse">
+      				<div class="panel-body">
+
+					</div>
+		      		<div class="panel-footer">
+		      			
+					</div>
+    			</div>
+  			</div>
+
+	-->

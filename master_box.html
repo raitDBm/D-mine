@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>RAIT</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
@@ -24,6 +25,20 @@
 
 </style>
     <script>
+        function printInfo(ele) {
+          var openWindow = window.open("", "title", "attributes");
+          var printcontainer = document.getElementById(ele).innerHTML;
+          openWindow.document.write('<html><head><title>Print</title><link rel="stylesheet" type="text/css" media="print" href="css/print.css"></head><body>')
+          openWindow.document.write(printcontainer);
+          openWindow.document.write('</body></html>');
+          openWindow.document.close();
+          openWindow.focus();
+          setInterval(function(){
+            openWindow.print();
+            openWindow.close();
+          },100);
+          
+      }
         function DropdownFunc(x) {
             if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
@@ -82,7 +97,7 @@
           data: dataValues,
           success: function(result){
             document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
-            setInterval(function(){window.location.replace("login.html")},2000);
+            setInterval(function(){window.location.replace("index.html")},2000);
           }
           });
         }
@@ -125,6 +140,7 @@
                 var alertMsg="";
                 var masterBoxCmd = $('#hiddenBox').val();
                 var dataString = '&Query='+ masterBoxCmd ;
+                $("#queryhistory").append("<br>"+masterBoxCmd);
                 if(masterBoxCmd=='')
                 {
                     alertMsg="Please select query  .... ";
@@ -142,6 +158,8 @@
 
                           document.getElementById('id01').style.display='block'
                           document.getElementById("selTableShow").innerHTML=result;
+                          $("#queryhistory").append("<br>"+result);
+                          $("#output").show();
 
 
                         }
@@ -159,6 +177,9 @@
                 document.getElementById("cmdWindow").innerHTML=cmd;
                 document.getElementById("tbTags").innerHTML="";
                 document.getElementById("allShow").innerHTML="";
+            });
+            $("#clearHistory").click(function(){
+                document.getElementById("queryhistory").innerHTML = "";
             });
         });
 
@@ -200,7 +221,7 @@
       <p id = "studentNo"></p>
       <hr>
     </div>
-    <a href="index.html"><i class="fa fa-home"></i> HOME</a>
+    <a href="home.html"><i class="fa fa-home"></i> HOME</a>
     <div class="w3-accordion">
         <a onclick="DropdownFunc(ddl)" href="#">
             <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
@@ -255,8 +276,9 @@
 
     <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
 
-    <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
+    <a href="reference.html"><i class="fa fa-puzzle-piece"></i> Reference</a>
     <a href="#"><i class="fa fa-globe"></i> HELP</a>
+    <p class="w3-bottom ">&nbsp&nbsp&nbspCopyright © 2017</p>
 </nav>
 <!-- side navigation bar end -->
 
@@ -292,18 +314,23 @@
 
                             </span>
                         </p>
-
-                        <textarea class="w3-dark-gray" id ="sqlcmdarea" name="message" rows="11" cols="120" style="width:100%" autofocus></textarea>
+<br>
+                        <textarea class="w3-light-gray" id ="sqlcmdarea" name="message" rows="11" cols="120" style="width:100%" autofocus></textarea>
+                        <br><br>
                         <p><button id = "run" class="w3-btn w3-right  w3-signal-red">RUN</button></p>
-
+                        <br><br>
                         <br>
+                        <div class="w3-container" id="output" style="display:none;">
+                            <h4 class="w3-center w3-text-red">Query History</h4><hr>
+                             <button class="w3-btn w3-right w3-round" id="clearHistory">Clear History</button><br>
+                            <div id="queryhistory">
+                                
+                            </div>                                                          
+                            <center><button class="w3-btn w3-red w3-center w3-round" onclick="printInfo('queryhistory')">Print</button></center> <br>
 
-                        <hr>
-                        <div id = "outputBox" class="w3-container">
-                            <div class="w3-center " style="opacity: 0.4"><h3 class=" w3-margin "><i class="fa fa-refresh fa-spin" style="font-size:24px"></i> .. <b>Tag Box</b> ..
-                                <i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h3><br><br><br><br><br>
-                            </div>
                         </div>
+
+                     
                     </div></p>
 
 
@@ -317,7 +344,7 @@
 
 
 
-<div id="id01" class="w3-modal">
+<div id="id01" class="w3-modal" onclick="document.getElementById('id01').style.display='none'" >
   <div class="w3-modal-content">
     <div class="w3-container">
       <span onclick="document.getElementById('id01').style.display='none'" class=" w3-white w3-button w3-display-topright"><i class="fa fa-close" style="font-size:25px;color:red"></i></span>
@@ -329,9 +356,7 @@
   </div>
 </div>
 
-<footer class="w3-container w3-light-grey w3-border-top">
-    <p class=" w3-right">Copyright © 2017 All rights reserved</p>
-</footer>
+
 </div>
 
 

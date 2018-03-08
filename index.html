@@ -1,134 +1,85 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html>
 <head>
-<title>RAIT</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-red.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<title>Login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/w3.css">
+	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
+	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-food.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script>
+
+	function login()
+	{
+		var roll_no = $("#roll_no").val();
+		var pass = $("#password").val();
+		var tago = "login";
+		var dataValues = 'tag='+ tago + '&roll_no='+ roll_no+'&password='+pass;
+		if(roll_no == "" || pass == "")
+		{
+			$("#alertBoxMain").show();
+			document.getElementById("alertBox").innerHTML="Please fill all the fields.";
+		} else {
+			$.ajax({
+				type: "POST",
+				url: "loginExe.php",
+				data: dataValues,
+				success: function(data){
+					data = JSON.parse(data);
+					if(data['login_status']) {
+						$("#alertBoxMain").show();
+						document.getElementById("alertBox").innerHTML="Login Successfull. Redirecting to Homepage... &nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
+						setTimeout(function(){window.location.href='home.html'},500);
+					} else {
+						$("#alertBoxMain").show();
+						document.getElementById("alertBox").innerHTML="Invalid User Credentials. No such user exists.";
+					}
+				}
+			});
+		}
+	}
+
+	function checkLogin() {
+		var isLoggedIn;
+		$.ajax({
+			type: "POST",
+			url: ''
+		})
+	}
+
+	</script>
 </head>
 <body>
-  <script>
-  function DropdownFunc(x) {
-        if (x.className.indexOf("w3-show") == -1) {
-          x.className += " w3-show";
-          x.previousElementSibling.className += "w3-signal-red";
-        } else {
-          x.className = x.className.replace(" w3-show", "");
-          x.previousElementSibling.className =
-          x.previousElementSibling.className.replace("w3-signal-red", "");
-        }
-      }
-
-	function logout()
-	{
-		var tago = "logout";
-		var dataValues  = 'tag='+tago;
-		$.ajax({
-		type: "POST",
-		url: "queryExecutor.php",
-		data: dataValues,
-		success: function(result){
-			document.getElementById('topheader').innerHTML = "Logout successfull. Redirecting to login page..&nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
-			setInterval(function(){window.location.replace("login.html")},2000);
-		}
-		});
-	}
-  </script>
-
-
-
-
-
-
-  <nav class="w3-sidenav w3-signal-red" style="width:160px;">
+<header class="w3-container w3-center">
+  <h1> <img src="images/logo.png" ></h1>
+</header>
 <br>
-    <a href="index.html"><i class="fa fa-home"></i> HOME</a>
-     <div class="w3-accordion">
-      <a onclick="DropdownFunc(ddl)" href="#">
-      <i class="fa fa-plus-square-o"></i> DDL Engine <i class="fa fa-caret-down"></i>
-      </a>
-
-      <div id="ddl" class="w3-accordion-content w3-white">
-       <!--DDL-CREATE-->
-         <div class="w3-accordion">
-            <a href="create_table.html"><i class="fa fa-angle-right"></i> Create Table</a>
-         </div>
-    <!--DDL-ALTER-->
-        <div class="w3-accordion">
-                <a  href="alter.html">
-                    <i class="fa fa-angle-right"></i> Alter Table
-                </a>
-         </div>
-          <!--DDL-Drop-->
-          <a href="drop.html"> <i class="fa fa-angle-right"></i> Drop Table</a>
-          <!--DDL-Truncate-->
-          <a href="truncate.html"><i class="fa fa-angle-right"></i> Truncate Table</a>
-       </div>
 
 
 
-     </div>
+<div class="w3-container">
+		<div class="w3-container w3-card-4 w3-round-large w3-border" style="max-width:600px;margin:0 auto;padding:10px;margin-top:15px">
+			<!-- Alert Box Section by default its hidden start-->
+			<div id="alertBoxMain" class="w3-panel w3-red" style="display:none; opacity: 0.4;">
+			  <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+			  <p id="alertBox"></p>
+			</div>
+			<!-- Alert Box Section by default its hidden end-->
+			<h2 class="w3-center">Login</h2>
 
-      <div class="w3-accordion">
-          <a onclick="DropdownFunc(dml)" href="#">
-              <i class="fa fa-plus-square-o"></i> DML Engine <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="dml" class="w3-accordion-content w3-white">
-              <a href="select.html"><i class="fa fa-angle-right"></i> Select</a>
-              <a href="insert.html"><i class="fa fa-angle-right"></i> Insert</a>
-              <a href="update.html"><i class="fa fa-angle-right"></i> Update</a>
-              <a href="delete.html"><i class="fa fa-angle-right"></i> Delete</a>
-          </div>
-      </div>
+				<label><b>Roll Number :</b></label>
+				<input class="w3-input" type="text" placeholder="Enter Roll Number" name="roll_no" id="roll_no" style="margin-bottom:10px;" required>
+				<label><b>Password :</b></label>
+				<input class="w3-input" type="password" placeholder="Enter Password" name="password" id="password" style="margin-bottom:10px;" required>
+				<p style="text-align:right;"><a href="forgotpass.html" class="w3-text-blue" >Forgot password</a></p>
 
-      <div class="w3-accordion">
-
-          <a onclick="DropdownFunc(alter_view)" href="#">
-              <i class="fa fa-plus-square-o"></i> View <i class="fa fa-caret-down"></i>
-          </a>
-          <div id="alter_view" class="w3-accordion-content w3-white"   >
-              <a href="create_view.html"><i class="fa fa-angle-right"></i> Create View</a>
-              <a href="drop_view.html"><i class="fa fa-angle-right"></i> Drop View</a>
-              <a href="rename_view.html"><i class="fa fa-angle-right"></i> Rename View</a>
-          </div>
-
-      </div>
-
-      <a href="master_box.html"><i class="fa fa-edit"></i> DevEngine</a>
-    
-      <a href="#"><i class="fa fa-puzzle-piece"></i> Reference</a>
-      <a href="#"><i class="fa fa-globe"></i> HELP</a>
-  </nav>
-
-  <div class="w3-main" style="margin-left:160px">
-    <header class="w3-container w3-light-grey w3-border-bottom">
-		<h3 id="topheader"><img src="images/logo.png" height="40px"> <button class="w3-btn w3-round-xlarge w3-signal-red w3-right w3-medium" onclick="logout();" >Logout</button></h3>
-    </header>
-    <div id="mainWindow">
-      <div class="w3-layout-container">
-          <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-topbar  w3-border-light-grey " style="width:100%; height: 50px;">
-            <p>command</p>
-          </div>
-      </div>
-      <div class="w3-layout-container">
-          <div class="w3-container w3-layout-col w3-bottombar w3-leftbar w3-rightbar w3-border-light-grey" style="width:70%; height: 576px;">
-
-          </div>
-          <div class="w3-container w3-layout-col w3-bottombar w3-rightbar w3-border-light-grey" >
-            <p>chart</p>
-          </div>
-      </div>
-    </div>
-    <footer class="w3-container w3-light-grey w3-border-top">
-      <p class=" w3-right">Copyright © 2017 All rights reserved</p>
-    </footer>
-  </div>
-
-
+				<p><button class="w3-btn w3-green w3-round "  name="login" id="login" onclick="login();">Login</button>
+				<a class="w3-btn w3-round w3-blue"  href="register.html">Register here</a></p>
+		</div>
+</div>
 
 </body>
 </html>

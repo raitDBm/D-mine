@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Registration</title>
+	<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/w3.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-signal.css">
@@ -65,7 +66,7 @@
 						if(data['registration_success']) {
 							$("#alertBoxMain").show();
 							document.getElementById("alertBox").innerHTML="Registraion Successfull. Now login using you Roll number and password &nbsp;<i class='fa fa-spinner fa-spin' aria-hidden='true'></i>";
-							setTimeout(function(){window.location.href='login.html'},3000);
+							setTimeout(function(){window.location.href='index.html'},3000);
 						} else {
 							$("#alertBoxMain").show();
 							document.getElementById("alertBox").innerHTML=data['registration_error'];
@@ -119,7 +120,7 @@
 				<br>
 				<br>
 				<button class="w3-btn w3-right w3-green w3-round-xlarge "  name="register" id = "register" onclick="register();">Register</button>
-				<a href="login.html"> <button type="button" class="w3-btn w3-round-xlarge w3-margin-bottom w3-sand"> << Back </button></a>
+				<a href="index.html"> <button type="button" class="w3-btn w3-round-xlarge w3-margin-bottom w3-sand"> << Back </button></a>
 		</div>
 </div>
 <br>
