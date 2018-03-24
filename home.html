@@ -53,8 +53,28 @@
     to {width: 400px; height: 400px;}
   }
 </style>
-<body onload="getNO();">
+<body onload="getNO();checkLogin();">
   <script>
+  function checkLogin() {
+    var tago="isLoggedIn";
+    var dataValues = 'tag='+ tago;
+    $.ajax({
+      type: "POST",
+      url: "queryExecutor.php",
+      data:dataValues,
+      cache:false,
+      success:function(result){
+        if(result == "true")
+        {
+             //do nothing    
+        }
+        else
+        {          
+          window.location.href="index.html";
+        }
+      }
+    });
+  }
   function DropdownFunc(x) {
         if (x.className.indexOf("w3-show") == -1) {
           x.className += " w3-show";

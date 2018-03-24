@@ -69,8 +69,28 @@
 	}
 </style>
 </head>
-<body>
+<body onload="checkLogin();">
 	<script>
+		function checkLogin() {
+		    var tago="isLoggedIn";
+		    var dataValues = 'tag='+ tago;
+		    $.ajax({
+		      type: "POST",
+		      url: "queryExecutor.php",
+		      data:dataValues,
+		      cache:false,
+		      success:function(result){
+		        if(result == "true")
+		        {
+		             //do nothing    
+		        }
+		        else
+		        {          
+		          window.location.href="index.html";
+		        }
+		      }
+		    });
+		  }
 		$(document).ready(function() {
 
 			var searchTerm, panelContainerId;

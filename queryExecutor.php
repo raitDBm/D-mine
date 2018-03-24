@@ -682,6 +682,17 @@ case "deleteselectall":
       }
       $con2->close();
       break;
+	
+     case "isLoggedIn":
+        if(isset($_SESSION['roll_no']))
+        {
+          echo "true";
+        }  
+        else{
+          echo "false";
+        }
+
+      break;
 
     default:
         echo "Nothing to show";
