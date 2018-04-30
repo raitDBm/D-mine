@@ -143,7 +143,44 @@ case "SelectExecution":
 
     $conn->close();
   break;
+    case "desc_stu":
+	$query=$_POST['Query'];
+	if( !mysql_select_db( 'dmine' ) )
+    die( 'Connected to Server, but Failed to Connect to Database - #'.mysql_errno().': '.mysql_error());
 
+	$tname="students";
+	$res=mysqli_query($con,$query);
+	if(!$res){
+		printf("Error:%s\n",mysqli_error($con));
+		
+	}
+	 echo "
+		<tr>
+		<td align=center> <b>Roll No</b></td>
+		<td align=center><b>Name</b></td>
+		<td align=center><b>E-mail</b></td>
+		<td align=center><b>Division</b></td></td>
+		<td align=center><b>Batch</b></td>
+		<td align=center><b>Year</b></td>
+		<td align=center></td>";
+
+            while($data = mysqli_fetch_array($res))
+            {
+                echo "<tr id='$data[0]'>";
+                echo "<td align=center>$data[0]</td>";
+                echo "<td align=center>$data[1]</td>";
+                echo "<td align=center>$data[2]</td>";
+                echo "<td align=center>$data[3]</td>";
+                echo "<td align=center>$data[4]</td>";
+                echo "<td align=center>$data[5]</td>";
+                echo "<td align=center><button class='w3-btn w3-red w3-small w3-round-xxlarge' onclick=\"remove('$data[0]');\">Delete Record</button></td>";
+                echo "</tr>";
+            }
+
+
+        break;
+
+	
 
     case "TbList":
 
@@ -160,9 +197,6 @@ case "SelectExecution":
 
             }
             echo json_encode($list);
-
-
-
         /* free result set */
         $result->free();
         break;
@@ -259,6 +293,21 @@ case "SelectExecution":
             }
             else{
                 echo "Error occured while dropping the column. Try again..";
+            }
+
+
+        break;
+	case "droprow":
+
+        $query_Stat=$_POST['Query'];
+
+            if($con->query($query_Stat)===TRUE){
+                echo "Student data deleted successfully";
+                $log="INSERT INTO logs(roll_no,query,logtime) values ('$roll_no','$query_Stat','$currGMTime')";
+                $con->query($log);
+            }
+            else{
+                echo "Error occured while deleting data. Try again..".$con->error;
             }
 
 
@@ -682,6 +731,40 @@ case "deleteselectall":
       }
       $con2->close();
       break;
+    
+    case "retrievedbs":
+        
+        $query_Stat=$_POST['query'];
+        
+
+            $result=mysqli_query($conn,$query_Stat);
+            /*echo "<br><b>".$tablename." structure</b><br><br>";*/
+            echo "
+		<tr>
+		<td align=center> <b>FIELD</b></td>
+		<td align=center><b>TYPE</b></td>
+		<td align=center><b>NULL</b></td>
+		<td align=center><b>KEY</b></td></td>
+		<td align=center><b>DEFAULT</b></td>
+		<td align=center><b>EXTRA</b></td>
+		<td align=center></td>";
+
+            while($data = mysqli_fetch_row($result))
+            {
+                echo "<tr id='$data[0]'>";
+                echo "<td align=center>$data[0]</td>";
+                echo "<td align=center>$data[1]</td>";
+                echo "<td align=center>$data[2]</td>";
+                echo "<td align=center>$data[3]</td>";
+                echo "<td align=center>$data[4]</td>";
+                echo "<td align=center>$data[5]</td>";
+                echo "<td align=center>$data[6]</td>";
+                
+//                echo "<td align=center><button class='w3-btn w3-red w3-small w3-round-xxlarge' onclick=\"remove('$data[0]');\">Drop</button>&nbsp;<button class='w3-btn w3-blue-grey w3-small w3-round-xxlarge' onclick=\"alter('$data[0]','$data[1]');\"> Edit</button></td>";
+                echo "</tr>";
+                
+            }
+
 
     default:
         echo "Nothing to show";
