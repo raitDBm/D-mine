@@ -64,6 +64,29 @@ function generatebatches(division)
 	document.getElementById('batch').innerHTML=optionlist;
 
 }
+function remove(colname){
+        	var cname = colname;
+
+        		var query= "DELETE FROM students WHERE roll_no='"+cname+"';";
+        		var tb_tag = "droprow";
+        		var dataValues = "tag="+tb_tag+"&Query="+query;
+        		$.ajax({
+        			type: "POST",
+        			url: "queryExecutor.php",
+        			data: dataValues,
+        			success: function(result){
+        				alertMsg=result;
+        				$("#alertBoxMain").show();
+
+        				document.getElementById("alertBox").innerHTML=alertMsg;
+
+        				document.getElementById("cmdWindow").innerHTML=query;
+
+        				$("#submit_btn").click();
+        			}
+        		})
+
+        }
 
 
 function submit (){
@@ -151,22 +174,39 @@ function submit (){
 		}else
 		query+= " AND batch = '" + batch + "'";
 	}
-	alert(query);
-	/*
-          $.ajax({
-          type: "POST",
-          url: "queryExecutor.php",
-          data: dataString,
-          success: function(result){
-            alertMsg=result;
-            var cmd = "CREATE DATABASE '"+name+"';";
-            $("#alertBoxMain").show();
-            document.getElementById("alertBox").innerHTML=alertMsg;
-            document.getElementById("cmdWindow").innerHTML=cmd;
-          }
-          });*/
+		
+	$(document).ready(function(){
+
+          
+                        
+			var queryy = query;
+			console.log(queryy);
+			var tago="desc_stu";
+            var dataString = 'tag='+ tago + '&Query=' + queryy;
+            
+           console.log(dataString);
+                  $.ajax({
+                  type: "POST",
+                  url: "queryExecutor.php",
+                  data: dataString,
+                  cache: false,
+                  success: function(result){
+					
+				    document.getElementById("tstructure").innerHTML=result;
+					
+                    
+                  }
+                  });
+            
+        
+
+       
+      });
+
+         
     }
 }
+
 
 </script>
 <body onload="generateyear();">
@@ -200,8 +240,13 @@ function submit (){
 
 <!--action section starts-->
 <div class="w3-container">
+<div id="alertBoxMain" class="w3-panel w3-green" style="display:none">
+                  <span onclick="this.parentElement.style.display='none'" class="w3-closebtn">&times;</span>
+                  <p id="alertBox"></p>
+                </div>
+
 	<h2 class="w3-center">Delete Databases and Users</h2>
-	<div class="w3-card-2 w3-container w3-leftbar w3-pale-yellow w3-border-yellow w3-padding">NOTE: These are all search parameters which are all optional<br>The more parameters you give the more precise will be the search results</div>
+	<div id="cmdWindow" class="w3-card-2 w3-container w3-leftbar w3-pale-yellow w3-border-yellow w3-padding">NOTE: These are all search parameters and mostly are optional.<br>The more parameters you give the more precise will be the search results</div>
 	<br>
 		<label><b>Registration Year(on dmine app)<b></label>
 		<select id="regyear" name="regyear" class="w3-input" style="margin-bottom:10px;" required>
@@ -210,7 +255,7 @@ function submit (){
 		<label>email-id</label>
 		<input type="email" name="email" id="email" class="w3-input" style="margin-bottom:10px;">
 		<label>Roll Number</label>
-		<input type="text" name="roll_no" id="roll_no" class="w3-input" style="margin-bottom:10px;">
+		<input type="text" name="roll_no" id="roll_no" class="w3-input" style="margin-bottom:10px;" required>
     <label><b>Division</b></label>
     <select id="division" name="division" id="division" onchange="generatebatches(this.value);" class="w3-input" style="margin-bottom:10px;">
 
@@ -220,9 +265,16 @@ function submit (){
 		<option value=''></option>
     </select>
 
-		<button type="submit" name="submit_btn" id="submit_btn"  class="w3-btn w3-round-xlarge w3-theme w3-margin-top w3-red" onclick="submit();">SUBMIT</button>
+		<button onclick="submit()" type="submit"  name="submit_btn" id="submit_btn"  class="w3-btn w3-round-xlarge w3-theme w3-margin-top w3-red" >SUBMIT</button>
 
-</div>
+
+		</div>
+		<div>
+						<table id="tstructure" class="w3-table w3-striped w3-bordered">
+
+						</table>
+
+		</div>
 
 <div id="table-container" class="w3-container" style="overflow: scroll; display: none;" >
 
